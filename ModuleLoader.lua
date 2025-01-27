@@ -13,13 +13,12 @@ local function internalWarn(message)
 end
 
 function ModuleLoader.LoadModule(name, url, SkillTree)
-    log("Attempting to load module: " .. name .. " from " .. url)
+    log("Attempting to load module: " .. name)
     local success, module = pcall(function()
         return loadstring(game:HttpGet(url))()
     end)
     
     if success and module then
-        log("Successfully loaded module: " .. name)
         if module.Init then
             local initSuccess, initError = pcall(function()
                 module.Init(SkillTree)
