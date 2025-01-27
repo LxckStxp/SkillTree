@@ -67,6 +67,20 @@ function UIElements.CreateTextLabel(SkillTree, parent, text, size, position)
     return label
 end
 
+function UIElements.CreateTitleLabel(SkillTree, parent, text, size, position)
+    local label = Instance.new("TextLabel")
+    label.Parent = parent
+    label.Size = size or UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30)
+    label.Position = position or UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text or ""
+    label.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
+    label.Font = SkillTree.SharedConfig.GetConfig("UI", "Font")
+    label.TextSize = SkillTree.SharedConfig.GetConfig("UI", "TitleFontSize")
+    label.Font = Enum.Font.SourceSansBold -- Use bold font for titles
+    return label
+end
+
 function UIElements.CreateButton(SkillTree, parent, text, onClick, size, position)
     local button = Instance.new("TextButton")
     button.Parent = parent
@@ -83,9 +97,11 @@ function UIElements.CreateButton(SkillTree, parent, text, onClick, size, positio
     -- Add subtle hover effect
     button.MouseEnter:Connect(function()
         button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
+        button.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize") + 2 -- Slightly increase font size on hover
     end)
     button.MouseLeave:Connect(function()
         button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
+        button.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize")
     end)
     
     button.MouseButton1Click:Connect(onClick)
@@ -122,8 +138,8 @@ end
 function UIElements.CreateImageLabel(SkillTree, parent, imageId, size, position)
     local imageLabel = Instance.new("ImageLabel")
     imageLabel.Parent = parent
-    imageLabel.Size = size or UDim2.new(0, 50, 0, 50)
-    imageLabel.Position = position or UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding"))
+    imageLabel.Size = size or UDim2.new(0, 24, 0, 24) -- Smaller size for minimalistic icons
+    imageLabel.Position = position or UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding") + 3) -- Adjusted position for alignment
     imageLabel.BackgroundTransparency = 1
     imageLabel.Image = imageId or ""
     return imageLabel
@@ -132,8 +148,8 @@ end
 function UIElements.CreateImageButton(SkillTree, parent, imageId, onClick, size, position)
     local imageButton = Instance.new("ImageButton")
     imageButton.Parent = parent
-    imageButton.Size = size or UDim2.new(0, 50, 0, 50)
-    imageButton.Position = position or UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding"))
+    imageButton.Size = size or UDim2.new(0, 24, 0, 24) -- Smaller size for minimalistic icons
+    imageButton.Position = position or UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding") + 3) -- Adjusted position for alignment
     imageButton.BackgroundTransparency = 1
     imageButton.Image = imageId or ""
     imageButton.MouseButton1Click:Connect(onClick)
@@ -267,8 +283,9 @@ function UIElements.CreateHeader(SkillTree, parent)
     local header = UIElements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "HeaderHeight")), UDim2.new(0, 0, 0, 0))
     header.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     
-    local titleLabel = UIElements.CreateTextLabel(SkillTree, header, "SkillTree", UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 1, 0), UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0))
-    titleLabel.TextSize = 20
+    local titleLabel = UIElements.CreateTitleLabel(SkillTree, header, "SkillTree", UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 1, 0), UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0))
+    titleLabel.TextSize = SkillTree.SharedConfig.GetConfig("UI", "TitleFontSize")
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Center -- Center-align the title
     
     -- Add a subtle separator line
     local separator = Instance.new("Frame")
@@ -279,6 +296,33 @@ function UIElements.CreateHeader(SkillTree, parent)
     separator.BorderSizePixel = 0
     
     return header
+end
+
+function UIElements.CreateSectionFrame(SkillTree, parent, title)
+    local sectionFrame = UIElements.CreateFrame(SkillTree, parent)
+    sectionFrame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
+    
+    -- Add a subtle gradient to the section background
+    local gradient = Instance.new("UIGradient")
+    gradient.Parent = sectionFrame
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, SkillTree.SharedConfig.GetConfig("UI", "Secondary")),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 60)) -- Slightly lighter shade
+    })
+    gradient.Rotation = 90
+    
+    -- Add a title to the section
+    local titleLabel = UIElements.CreateTitleLabel(SkillTree, sectionFrame, title, UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30), UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding")))
+    
+    -- Add a subtle divider at the bottom of the section
+    local divider = Instance.new("Frame")
+    divider.Parent = sectionFrame
+    divider.Size = UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
+    divider.Position = UDim2.new(0, 0, 1, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
+    divider.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Tertiary")
+    divider.BorderSizePixel = 0
+    
+    return sectionFrame
 end
 
 function UIElements.CreateLeftPanel(SkillTree, parent)
@@ -296,7 +340,17 @@ function UIElements.CreateContentArea(SkillTree, parent)
 end
 
 function UIElements.CreatePluginButton(SkillTree, parent, text, onClick)
-    return UIElements.CreateButton(SkillTree, parent, text, onClick)
+    local button = UIElements.CreateButton(SkillTree, parent, text, onClick)
+    
+    -- Add an icon next to the button text
+    local icon = UIElements.CreateImageLabel(SkillTree, button, "rbxassetid://YOUR_ICON_ID_HERE") -- Replace with actual icon ID
+    icon.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding") + 3)
+    
+    -- Adjust button text position to accommodate the icon
+    button.TextXAlignment = Enum.TextXAlignment.Left
+    button.TextLabel.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2 + 24, 0, 0) -- 24 is the icon size
+    
+    return button
 end
 
 return UIElements
