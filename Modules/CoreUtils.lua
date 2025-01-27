@@ -7,4 +7,3 @@ function CoreUtils.Init(SkillTree) SkillTree.GlobalData.SomeImportantData = "Ini
 function CoreUtils.UtilityFunction() SkillTree.Logger.Log("CoreUtils", "Utility function called"); return "Utility function result" end
 
 return CoreUtils
- 
