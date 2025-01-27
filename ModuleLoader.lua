@@ -8,7 +8,7 @@ local function log(message)
 end
 
 -- Internal warning function
-local function warn(message)
+local function internalWarn(message)
     warn("[ModuleLoader] " .. message)
 end
 
@@ -25,7 +25,7 @@ function ModuleLoader.LoadModule(name, url, SkillTree)
                 module.Init(SkillTree)
             end)
             if not initSuccess then
-                warn("Failed to initialize module: " .. name .. ". Error: " .. tostring(initError))
+                internalWarn("Failed to initialize module: " .. name .. ". Error: " .. tostring(initError))
             else
                 log("Successfully initialized module: " .. name)
             end
@@ -39,9 +39,8 @@ function ModuleLoader.LoadModule(name, url, SkillTree)
         
         log("Loaded module: " .. name)
     else
-        warn("Failed to load module: " .. name .. ". Error: " .. tostring(module))
+        internalWarn("Failed to load module: " .. name .. ". Error: " .. tostring(module))
     end
 end
 
 return ModuleLoader
- 
