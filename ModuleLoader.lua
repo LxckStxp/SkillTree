@@ -13,13 +13,22 @@ local function warn(message)
 end
 
 function ModuleLoader.LoadModule(name, url, SkillTree)
+    log("Attempting to load module: " .. name .. " from " .. url)
     local success, module = pcall(function()
         return loadstring(game:HttpGet(url))()
     end)
     
     if success and module then
+        log("Successfully loaded module: " .. name)
         if module.Init then
-            module.Init(SkillTree)
+            local initSuccess, initError = pcall(function()
+                module.Init(SkillTree)
+            end)
+            if not initSuccess then
+                warn("Failed to initialize module: " .. name .. ". Error: " .. tostring(initError))
+            else
+                log("Successfully initialized module: " .. name)
+            end
         end
         
         if module.IsPlugin then
@@ -35,4 +44,3 @@ function ModuleLoader.LoadModule(name, url, SkillTree)
 end
 
 return ModuleLoader
- 
