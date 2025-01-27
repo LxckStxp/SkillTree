@@ -1,5 +1,3 @@
--- main/UI/UIElements.lua
-
 local UIElements = {}
 
 function UIElements.CreateScreenGui(SkillTree)
@@ -19,6 +17,7 @@ function UIElements.CreateFrame(SkillTree, parent, size, position)
     frame.Parent = parent
     frame.Size = size or SkillTree.SharedConfig.GetConfig("UI", "Size")
     frame.Position = position or SkillTree.SharedConfig.GetConfig("UI", "Position")
+    SkillTree.Logger.Log("UIElements", "CreateFrame BackgroundColor3: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "Background")))
     frame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
     frame.BorderSizePixel = 0
     return frame
