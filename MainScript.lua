@@ -1,12 +1,12 @@
--- MainScript.lua
+-- main/MainScript.lua
 
 _G.SkillTree = {Modules = {}, GlobalData = {}}
 
 -- Load ModuleLoader
-local ModuleLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Main/ModuleLoader.lua"))()
+local ModuleLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/LxckStxp/SkillTree/main/ModuleLoader.lua"))()
 
 -- Use ModuleLoader to load itself into SkillTree
-ModuleLoader.LoadModule("ModuleLoader", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Main/ModuleLoader.lua", _G.SkillTree)
+ModuleLoader.LoadModule("ModuleLoader", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/ModuleLoader.lua", _G.SkillTree)
 
 local function InitSkillTree()
     ModuleLoader.LoadModule("SharedConfig", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/CoreModules/SharedConfig.lua", _G.SkillTree)
