@@ -1,6 +1,8 @@
 -- main/Plugins/ActionPlugin.lua
 
-local ActionPlugin = {}
+local ActionPlugin = {
+    IsPlugin = true
+}
 
 function ActionPlugin.Init(SkillTree)
     SkillTree.Logger.Log("ActionPlugin", "Initialized")
