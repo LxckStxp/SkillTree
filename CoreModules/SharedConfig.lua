@@ -10,3 +10,4 @@ function SharedConfig.GetConfig(category, key) return SharedConfig[category] and
 function SharedConfig.Init(SkillTree) SkillTree.SharedConfig = SharedConfig end
 
 return SharedConfig
+ 
