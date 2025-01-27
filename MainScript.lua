@@ -2,10 +2,6 @@
 
 _G.SkillTree = {Modules = {}, GlobalData = {}}
 
--- Load Logger first
-local Logger = loadstring(game:HttpGet("https://raw.githubusercontent.com/LxckStxp/SkillTree/main/CoreModules/Logger.lua"))()
-Logger.Init(_G.SkillTree)
-
 -- Load ModuleLoader
 local ModuleLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/LxckStxp/SkillTree/main/ModuleLoader.lua"))()
 
@@ -15,6 +11,7 @@ ModuleLoader.LoadModule("ModuleLoader", "https://raw.githubusercontent.com/LxckS
 local function InitSkillTree()
     -- Load core modules
     ModuleLoader.LoadModule("SharedConfig", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/CoreModules/SharedConfig.lua", _G.SkillTree)
+    ModuleLoader.LoadModule("Logger", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/CoreModules/Logger.lua", _G.SkillTree)
     ModuleLoader.LoadModule("CoreUtils", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/CoreUtils.lua", _G.SkillTree)
     ModuleLoader.LoadModule("NetworkManager", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/NetworkManager.lua", _G.SkillTree)
     ModuleLoader.LoadModule("UIHandler", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/UI/UIHandler.lua", _G.SkillTree)
