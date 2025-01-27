@@ -16,111 +16,54 @@ function UIHandler.ToggleMenu(SkillTree)
 end
 
 function UIHandler.Init(SkillTree)
-    SkillTree.Logger.Log("UIHandler", "Initializing UI system")
-    SkillTree.Logger.Log("UIHandler", "Checking if UIElements is loaded: " .. tostring(SkillTree.UIElements ~= nil))
-    SkillTree.Logger.Log("UIHandler", "Checking if SharedConfig is loaded: " .. tostring(SkillTree.SharedConfig ~= nil))
-    if SkillTree.SharedConfig then
-        SkillTree.Logger.Log("UIHandler", "SharedConfig.Primary: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "Primary")))
-        SkillTree.Logger.Log("UIHandler", "SharedConfig.Secondary: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "Secondary")))
-        SkillTree.Logger.Log("UIHandler", "SharedConfig.Tertiary: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "Tertiary")))
-        SkillTree.Logger.Log("UIHandler", "SharedConfig.Accent: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "Accent")))
-        SkillTree.Logger.Log("UIHandler", "SharedConfig.Text: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "Text")))
-        SkillTree.Logger.Log("UIHandler", "SharedConfig.Background: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "Background")))
-        SkillTree.Logger.Log("UIHandler", "SharedConfig.TrueColor: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "TrueColor")))
-        SkillTree.Logger.Log("UIHandler", "SharedConfig.FalseColor: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "FalseColor")))
-    end
-    SkillTree.UI = {Elements = SkillTree.UIElements} -- Use the pre-loaded UIElements
-    SkillTree.Logger.Log("UIHandler", "UIElements assigned to SkillTree.UI.Elements")
+    SkillTree.UI = {Elements = SkillTree.UIElements}
     UIHandler.CreateMainMenu(SkillTree)
     
     -- Set up toggle functionality
     game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
         if not gameProcessed and input.KeyCode == Enum.KeyCode.RightControl then
-            SkillTree.Logger.Log("UIHandler", "Toggle key pressed")
             UIHandler.ToggleMenu(SkillTree)
         end
     end)
 end
 
 function UIHandler.OnStart(SkillTree) 
-    SkillTree.Logger.Log("UIHandler", "Starting UI system") 
+    -- Empty function, can be used for future expansion
 end
 
--- main/UI/UIHandler.lua
-
 function UIHandler.CreateMainMenu(SkillTree)
-    SkillTree.Logger.Log("UIHandler", "Creating main menu")
     local screenGui = SkillTree.UI.Elements.CreateScreenGui(SkillTree)
-    if not screenGui then
-        SkillTree.Logger.Warn("UIHandler", "Failed to create ScreenGui")
-        return
-    end
+    if not screenGui then return end
     
     local mainFrame = SkillTree.UI.Elements.CreateStyledFrame(SkillTree, screenGui)
-    mainFrame.Visible = false -- Start with the menu hidden
-    SkillTree.Logger.Log("UIHandler", "Main frame created")
-    SkillTree.Logger.Log("UIHandler", "MainFrame.BackgroundColor3: " .. tostring(mainFrame.BackgroundColor3))
+    mainFrame.Visible = false
     
-    -- Create header
     local header = UIHandler.CreateHeader(SkillTree, mainFrame)
-    SkillTree.Logger.Log("UIHandler", "Header created")
-    SkillTree.Logger.Log("UIHandler", "Header.BackgroundColor3: " .. tostring(header.BackgroundColor3))
     
-    -- Create left panel for plugins list
     local leftPanel = SkillTree.UI.Elements.CreateLeftPanel(SkillTree, mainFrame)
-    SkillTree.Logger.Log("UIHandler", "LeftPanel.BackgroundColor3: " .. tostring(leftPanel.BackgroundColor3))
     local pluginsList = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, leftPanel)
     UIHandler.UpdatePluginsList(SkillTree, pluginsList)
-    SkillTree.Logger.Log("UIHandler", "Left panel created")
-    SkillTree.Logger.Log("UIHandler", "PluginsList.BackgroundColor3: " .. tostring(pluginsList.BackgroundColor3))
     
-    -- Create content area
     local contentArea = SkillTree.UI.Elements.CreateContentArea(SkillTree, mainFrame)
-    SkillTree.Logger.Log("UIHandler", "ContentArea.BackgroundColor3: " .. tostring(contentArea.BackgroundColor3))
     local contentFrame = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, contentArea)
-    SkillTree.Logger.Log("UIHandler", "Content area created")
-    SkillTree.Logger.Log("UIHandler", "ContentFrame.BackgroundColor3: " .. tostring(contentFrame.BackgroundColor3))
     
     SkillTree.GlobalData.MainFrame = mainFrame
     SkillTree.GlobalData.PluginsList = pluginsList
     SkillTree.GlobalData.ContentFrame = contentFrame
 end
 
-
 function UIHandler.CreateHeader(SkillTree, parent)
     local header = SkillTree.UI.Elements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "HeaderHeight")), UDim2.new(0, 0, 0, 0))
-    SkillTree.Logger.Log("UIHandler", "HeaderColor: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "Primary")))
-    local headerColor = SkillTree.SharedConfig.GetConfig("UI", "Primary")
-    if headerColor and typeof(headerColor) == "Color3" then
-        header.BackgroundColor3 = headerColor
-        SkillTree.Logger.Log("UIHandler", "Set header.BackgroundColor3 to: " .. tostring(header.BackgroundColor3))
-    else
-        SkillTree.Logger.Warn("UIHandler", "Invalid header color. Using default color.")
-        header.BackgroundColor3 = Color3.fromRGB(20, 20, 20) -- Default color
-        SkillTree.Logger.Log("UIHandler", "Set header.BackgroundColor3 to default: " .. tostring(header.BackgroundColor3))
-    end
+    header.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     
-    -- Center-aligned title with increased font size
     local titleLabel = SkillTree.UI.Elements.CreateTitleLabel(SkillTree, header, "SkillTree", UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 1, 0), UDim2.new(0, 0, 0, 0))
     titleLabel.Position = UDim2.new(0.5, -titleLabel.TextBounds.X/2, 0, 0)
     
-    -- Add a subtle separator line
     local separator = Instance.new("Frame")
     separator.Parent = header
     separator.Size = UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
     separator.Position = UDim2.new(0, 0, 1, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
-    
-    local separatorColor = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
-    SkillTree.Logger.Log("UIHandler", "SeparatorColor: " .. tostring(separatorColor))
-    if separatorColor and typeof(separatorColor) == "Color3" then
-        separator.BackgroundColor3 = separatorColor
-        SkillTree.Logger.Log("UIHandler", "Set separator.BackgroundColor3 to: " .. tostring(separator.BackgroundColor3))
-    else
-        SkillTree.Logger.Warn("UIHandler", "Invalid separator color. Using default color.")
-        separator.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Default color
-        SkillTree.Logger.Log("UIHandler", "Set separator.BackgroundColor3 to default: " .. tostring(separator.BackgroundColor3))
-    end
-    
+    separator.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
     separator.BorderSizePixel = 0
     
     return header
@@ -168,9 +111,8 @@ function UIHandler.ShowPluginContent(SkillTree, pluginName)
                     item.Parent = contentFrame
                     item.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition)
                     
-                    -- Handle toggle button
                     if item:IsA("TextButton") and item.Text == "Toggle Test" then
-                        UIHandler.UpdateToggleButton(SkillTree, item.Text, false) -- Initialize as false
+                        UIHandler.UpdateToggleButton(SkillTree, item.Text, false)
                     end
                 else
                     local label = UIHandler.CreateWrappedTextLabel(SkillTree, contentFrame, tostring(item), UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30), UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition))
@@ -192,11 +134,7 @@ function UIHandler.UpdateToggleButton(SkillTree, buttonText, state)
     local contentFrame = SkillTree.GlobalData.ContentFrame
     for _, child in ipairs(contentFrame:GetChildren()) do
         if child:IsA("TextButton") and child.Text == buttonText then
-            if state then
-                child.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "TrueColor")
-            else
-                child.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "FalseColor")
-            end
+            child.TextColor3 = state and SkillTree.SharedConfig.GetConfig("UI", "TrueColor") or SkillTree.SharedConfig.GetConfig("UI", "FalseColor")
         end
     end
 end
@@ -218,4 +156,3 @@ function UIHandler.CreateWrappedTextLabel(SkillTree, parent, text, size, positio
 end
 
 return UIHandler
- 
