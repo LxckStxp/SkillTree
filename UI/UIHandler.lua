@@ -110,6 +110,11 @@ function UIHandler.ShowPluginContent(SkillTree, pluginName)
                 if type(item) == "userdata" and item.IsA then
                     item.Parent = contentFrame
                     item.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition)
+                    
+                    -- Handle toggle button
+                    if item:IsA("TextButton") and item.Text == "Toggle Test" then
+                        UIHandler.UpdateToggleButton(SkillTree, item.Text, false) -- Initialize as false
+                    end
                 else
                     local label = UIHandler.CreateWrappedTextLabel(SkillTree, contentFrame, tostring(item), UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30), UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition))
                     itemHeight = label.TextBounds.Y + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2
@@ -126,15 +131,16 @@ function UIHandler.ShowPluginContent(SkillTree, pluginName)
     end
 end
 
-function UIHandler.ToggleMenu(SkillTree)
-    isVisible = not isVisible
-    SkillTree.GlobalData.MainFrame.Visible = isVisible
-    
-    -- Add a smooth transition effect
-    if isVisible then
-        SkillTree.GlobalData.MainFrame:TweenSizeAndPosition(SkillTree.SharedConfig.GetConfig("UI", "Size"), SkillTree.SharedConfig.GetConfig("UI", "Position"), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
-    else
-        SkillTree.GlobalData.MainFrame:TweenSizeAndPosition(UDim2.new(0, 0, 0, 0), SkillTree.SharedConfig.GetConfig("UI", "Position"), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
+function UIHandler.UpdateToggleButton(SkillTree, buttonText, state)
+    local contentFrame = SkillTree.GlobalData.ContentFrame
+    for _, child in ipairs(contentFrame:GetChildren()) do
+        if child:IsA("TextButton") and child.Text == buttonText then
+            if state then
+                child.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "TrueColor")
+            else
+                child.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "FalseColor")
+            end
+        end
     end
 end
 
