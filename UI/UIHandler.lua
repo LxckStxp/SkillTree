@@ -115,7 +115,7 @@ function UIHandler.CreateHeader(SkillTree, parent)
     separator.BorderSizePixel = 0
     
     return header
-end
+end 
 
 function UIHandler.UpdatePluginsList(SkillTree, pluginsList)
     for _, v in pairs(pluginsList:GetChildren()) do
