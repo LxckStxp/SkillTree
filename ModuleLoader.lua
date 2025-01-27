@@ -7,10 +7,10 @@ function ModuleLoader.LoadModule(name, url, SkillTree)
     if success and type(module) == "table" then
         SkillTree.Modules[name] = module
         if module.Init then module.Init(SkillTree) end
-        print(string.format("[%s] [%s] Loaded module: %s", os.date("%Y-%m-%d %H:%M:%S"), "ModuleLoader", name))
+        print(string.format("[%s] Loaded module: %s", name, name))
         return module
     else
-        warn(string.format("[%s] [%s] WARNING: Failed to load module: %s", os.date("%Y-%m-%d %H:%M:%S"), "ModuleLoader", name))
+        warn(string.format("[%s] WARNING: Failed to load module: %s", name, name))
     end
 end
 
