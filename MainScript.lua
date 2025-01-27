@@ -26,6 +26,9 @@ local function InitSkillTree()
         if module.OnStart then module.OnStart(_G.SkillTree) end
     end
     
+    -- Load UIElements
+    ModuleLoader.LoadModule("UIElements", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/UI/UIElements.lua", _G.SkillTree)
+    
     -- Load UIHandler last
     ModuleLoader.LoadModule("UIHandler", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/UI/UIHandler.lua", _G.SkillTree)
     
