@@ -1,4 +1,6 @@
 -- main/MainScript.lua
+print("SkillTree Incoming..")
+
 
 _G.SkillTree = {Modules = {}, GlobalData = {}}
 
