@@ -12,7 +12,8 @@ function UIHandler.OnStart(SkillTree) SkillTree.Logger.Log("UIHandler", "Startin
 
 function UIHandler.CreateMainMenu(SkillTree)
     SkillTree.Logger.Log("UIHandler", "Creating main menu")
-    local mainFrame = SkillTree.UI.Elements.CreateFrame(SkillTree)
+    local screenGui = SkillTree.UI.Elements.CreateScreenGui()
+    local mainFrame = SkillTree.UI.Elements.CreateFrame(SkillTree, screenGui)
     if mainFrame then
         SkillTree.Logger.Log("UIHandler", "Main frame created")
         local titleLabel = SkillTree.UI.Elements.CreateTitleLabel(SkillTree, mainFrame)
