@@ -54,7 +54,12 @@ end
 
 function UIHandler.CreateHeader(SkillTree, parent)
     local header = SkillTree.UI.Elements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "HeaderHeight")), UDim2.new(0, 0, 0, 0))
-    header.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
+    local headerColor = SkillTree.SharedConfig.GetConfig("UI", "Primary")
+    if headerColor and typeof(headerColor) == "Color3" then
+        header.BackgroundColor = headerColor
+    else
+        header.BackgroundColor = Color3.fromRGB(20, 20, 20) -- Default color
+    end
     
     local titleLabel = SkillTree.UI.Elements.CreateTitleLabel(SkillTree, header, "SkillTree", UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 1, 0), UDim2.new(0, 0, 0, 0))
     titleLabel.Position = UDim2.new(0.5, -titleLabel.TextBounds.X/2, 0, 0)
@@ -63,11 +68,16 @@ function UIHandler.CreateHeader(SkillTree, parent)
     separator.Parent = header
     separator.Size = UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
     separator.Position = UDim2.new(0, 0, 1, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
-    separator.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
+    local separatorColor = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
+    if separatorColor and typeof(separatorColor) == "Color3" then
+        separator.BackgroundColor = separatorColor
+    else
+        separator.BackgroundColor = Color3.fromRGB(50, 50, 50) -- Default color
+    end
     separator.BorderSizePixel = 0
     
     return header
-end 
+end
 
 function UIHandler.UpdatePluginsList(SkillTree, pluginsList)
     for _, v in pairs(pluginsList:GetChildren()) do
