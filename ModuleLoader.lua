@@ -2,6 +2,16 @@
 
 local ModuleLoader = {}
 
+-- Internal logging function
+local function log(message)
+    print("[ModuleLoader] " .. message)
+end
+
+-- Internal warning function
+local function warn(message)
+    warn("[ModuleLoader] " .. message)
+end
+
 function ModuleLoader.LoadModule(name, url, SkillTree)
     local success, module = pcall(function()
         return loadstring(game:HttpGet(url))()
@@ -18,9 +28,9 @@ function ModuleLoader.LoadModule(name, url, SkillTree)
             SkillTree[name] = module
         end
         
-        SkillTree.Logger.Log("ModuleLoader", "Loaded module: " .. name)
+        log("Loaded module: " .. name)
     else
-        SkillTree.Logger.Warn("ModuleLoader", "Failed to load module: " .. name .. ". Error: " .. tostring(module))
+        warn("Failed to load module: " .. name .. ". Error: " .. tostring(module))
     end
 end
 
