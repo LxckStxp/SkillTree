@@ -18,6 +18,8 @@ local SharedConfig = {
         Accent = Color3.fromRGB(100, 180, 255), -- Soft blue accent
         Text = Color3.fromRGB(240, 240, 240), -- Soft white text for better readability
         Background = Color3.fromRGB(30, 30, 30), -- Dark background
+        TrueColor = Color3.fromRGB(0, 255, 0), -- Green for true
+        FalseColor = Color3.fromRGB(255, 0, 0), -- Red for false
         
         -- Padding and spacing
         Padding = 5, -- Reduced from 10 to 5
