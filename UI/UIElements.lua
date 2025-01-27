@@ -18,7 +18,15 @@ function UIElements.CreateFrame(SkillTree, parent, size, position)
     frame.Size = size or SkillTree.SharedConfig.GetConfig("UI", "Size")
     frame.Position = position or SkillTree.SharedConfig.GetConfig("UI", "Position")
     SkillTree.Logger.Log("UIElements", "CreateFrame BackgroundColor3: " .. tostring(SkillTree.SharedConfig.GetConfig("UI", "Background")))
-    frame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
+    local backgroundColor = SkillTree.SharedConfig.GetConfig("UI", "Background")
+    if backgroundColor and typeof(backgroundColor) == "Color3" then
+        frame.BackgroundColor3 = backgroundColor
+        SkillTree.Logger.Log("UIElements", "Set frame.BackgroundColor3 to: " .. tostring(frame.BackgroundColor3))
+    else
+        SkillTree.Logger.Warn("UIElements", "Invalid background color. Using default color.")
+        frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Default color
+        SkillTree.Logger.Log("UIElements", "Set frame.BackgroundColor3 to default: " .. tostring(frame.BackgroundColor3))
+    end
     frame.BorderSizePixel = 0
     return frame
 end
