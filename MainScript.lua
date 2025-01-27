@@ -16,7 +16,7 @@ local function InitSkillTree()
     ModuleLoader.LoadModule("NetworkManager", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/NetworkManager.lua", _G.SkillTree)
     
     -- Load plugins
-    local plugins = {"ActionPlugin", "JumpPlugin"}
+    local plugins = {"ActionPlugin", "JumpPlugin", "ToggleTestPlugin"}
     for _, pluginName in ipairs(plugins) do
         ModuleLoader.LoadModule(pluginName, "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Plugins/" .. pluginName .. ".lua", _G.SkillTree)
     end
