@@ -13,7 +13,7 @@ local function InitSkillTree()
     ModuleLoader.LoadModule("Logger", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/CoreModules/Logger.lua", _G.SkillTree)
     ModuleLoader.LoadModule("CoreUtils", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/CoreUtils.lua", _G.SkillTree)
     ModuleLoader.LoadModule("NetworkManager", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/NetworkManager.lua", _G.SkillTree)
-    ModuleLoader.LoadModule("UIHandler", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/UIHandler.lua", _G.SkillTree)
+    ModuleLoader.LoadModule("UIHandler", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/UI/UIHandler.lua", _G.SkillTree)
     
     for _, module in pairs(_G.SkillTree.Modules) do
         if module.OnStart then module.OnStart(_G.SkillTree) end
