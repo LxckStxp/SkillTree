@@ -13,9 +13,29 @@ function UIHandler.OnStart(SkillTree) SkillTree.Logger.Log("UIHandler", "Startin
 function UIHandler.CreateMainMenu(SkillTree)
     SkillTree.Logger.Log("UIHandler", "Creating main menu")
     local mainFrame = SkillTree.UI.Elements.CreateFrame(SkillTree)
-    local titleLabel = SkillTree.UI.Elements.CreateTitleLabel(SkillTree, mainFrame)
-    local startButton = SkillTree.UI.Elements.CreateButton(SkillTree, mainFrame, "Start", function() SkillTree.Logger.Log("UIHandler", "Start button clicked") end)
-    local settingsButton = SkillTree.UI.Elements.CreateButton(SkillTree, mainFrame, "Settings", function() SkillTree.Logger.Log("UIHandler", "Settings button clicked") end)
+    if mainFrame then
+        SkillTree.Logger.Log("UIHandler", "Main frame created")
+        local titleLabel = SkillTree.UI.Elements.CreateTitleLabel(SkillTree, mainFrame)
+        if titleLabel then
+            SkillTree.Logger.Log("UIHandler", "Title label created")
+            local startButton = SkillTree.UI.Elements.CreateButton(SkillTree, mainFrame, "Start", function() SkillTree.Logger.Log("UIHandler", "Start button clicked") end)
+            if startButton then
+                SkillTree.Logger.Log("UIHandler", "Start button created")
+                local settingsButton = SkillTree.UI.Elements.CreateButton(SkillTree, mainFrame, "Settings", function() SkillTree.Logger.Log("UIHandler", "Settings button clicked") end)
+                if settingsButton then
+                    SkillTree.Logger.Log("UIHandler", "Settings button created")
+                else
+                    SkillTree.Logger.Warn("UIHandler", "Failed to create settings button")
+                end
+            else
+                SkillTree.Logger.Warn("UIHandler", "Failed to create start button")
+            end
+        else
+            SkillTree.Logger.Warn("UIHandler", "Failed to create title label")
+        end
+    else
+        SkillTree.Logger.Warn("UIHandler", "Failed to create main frame")
+    end
 end
 
 return UIHandler
