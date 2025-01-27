@@ -24,6 +24,36 @@ function UIElements.CreateFrame(SkillTree, parent, size, position)
     return frame
 end
 
+function UIElements.CreateDraggableFrame(SkillTree, parent, size, position)
+    local frame = UIElements.CreateFrame(SkillTree, parent, size, position)
+    
+    local dragging = false
+    local dragInput, mousePos, framePos
+
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            mousePos = input.Position
+            framePos = frame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+            local delta = input.Position - mousePos
+            frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+        end
+    end)
+
+    return frame
+end
+
 function UIElements.CreateTextLabel(SkillTree, parent, text, size, position)
     local label = Instance.new("TextLabel")
     label.Parent = parent
