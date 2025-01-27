@@ -57,8 +57,8 @@ end
 function UIElements.CreateTextLabel(SkillTree, parent, text, size, position)
     local label = Instance.new("TextLabel")
     label.Parent = parent
-    label.Size = size or UDim2.new(1, 0, 0, 30)
-    label.Position = position or UDim2.new(0, 0, 0, 0)
+    label.Size = size or UDim2.new(1, -10, 0, 30) -- Add padding
+    label.Position = position or UDim2.new(0, 5, 0, 0) -- Add padding
     label.BackgroundTransparency = 1
     label.Text = text or ""
     label.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
@@ -70,8 +70,8 @@ end
 function UIElements.CreateButton(SkillTree, parent, text, onClick, size, position)
     local button = Instance.new("TextButton")
     button.Parent = parent
-    button.Size = size or UDim2.new(1, 0, 0, 30)
-    button.Position = position or UDim2.new(0, 0, 0, 0)
+    button.Size = size or UDim2.new(1, -10, 0, 30) -- Add padding
+    button.Position = position or UDim2.new(0, 5, 0, 0) -- Add padding
     button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     button.BorderSizePixel = 0
     button.AutoButtonColor = false
@@ -90,14 +90,24 @@ function UIElements.CreateButton(SkillTree, parent, text, onClick, size, positio
     
     button.MouseButton1Click:Connect(onClick)
     
+    -- Add a subtle border
+    local border = Instance.new("Frame")
+    border.Parent = button
+    border.Size = UDim2.new(1, 2, 1, 2)
+    border.Position = UDim2.new(0, -1, 0, -1)
+    border.BackgroundTransparency = 1
+    border.BorderSizePixel = 1
+    border.BorderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Tertiary")
+    border.ZIndex = button.ZIndex - 1
+    
     return button
 end
 
 function UIElements.CreateTextBox(SkillTree, parent, placeholderText, size, position)
     local textBox = Instance.new("TextBox")
     textBox.Parent = parent
-    textBox.Size = size or UDim2.new(1, 0, 0, 30)
-    textBox.Position = position or UDim2.new(0, 0, 0, 0)
+    textBox.Size = size or UDim2.new(1, -10, 0, 30) -- Add padding
+    textBox.Position = position or UDim2.new(0, 5, 0, 0) -- Add padding
     textBox.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
     textBox.BorderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
     textBox.BorderSizePixel = 1
@@ -113,7 +123,7 @@ function UIElements.CreateImageLabel(SkillTree, parent, imageId, size, position)
     local imageLabel = Instance.new("ImageLabel")
     imageLabel.Parent = parent
     imageLabel.Size = size or UDim2.new(0, 50, 0, 50)
-    imageLabel.Position = position or UDim2.new(0, 0, 0, 0)
+    imageLabel.Position = position or UDim2.new(0, 5, 0, 5) -- Add padding
     imageLabel.BackgroundTransparency = 1
     imageLabel.Image = imageId or ""
     return imageLabel
@@ -123,7 +133,7 @@ function UIElements.CreateImageButton(SkillTree, parent, imageId, onClick, size,
     local imageButton = Instance.new("ImageButton")
     imageButton.Parent = parent
     imageButton.Size = size or UDim2.new(0, 50, 0, 50)
-    imageButton.Position = position or UDim2.new(0, 0, 0, 0)
+    imageButton.Position = position or UDim2.new(0, 5, 0, 5) -- Add padding
     imageButton.BackgroundTransparency = 1
     imageButton.Image = imageId or ""
     imageButton.MouseButton1Click:Connect(onClick)
@@ -142,8 +152,8 @@ end
 function UIElements.CreateScrollingFrame(SkillTree, parent, size, position)
     local scrollingFrame = Instance.new("ScrollingFrame")
     scrollingFrame.Parent = parent
-    scrollingFrame.Size = size or SkillTree.SharedConfig.GetConfig("UI", "Size")
-    scrollingFrame.Position = position or SkillTree.SharedConfig.GetConfig("UI", "Position")
+    scrollingFrame.Size = size or UDim2.new(1, -10, 1, -10) -- Add padding
+    scrollingFrame.Position = position or UDim2.new(0, 5, 0, 5) -- Add padding
     scrollingFrame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
     scrollingFrame.BorderSizePixel = 0
     scrollingFrame.ScrollBarThickness = 4
@@ -155,8 +165,8 @@ end
 function UIElements.CreateProgressBar(SkillTree, parent, value, size, position)
     local progressBar = Instance.new("Frame")
     progressBar.Parent = parent
-    progressBar.Size = size or UDim2.new(1, 0, 0, 10)
-    progressBar.Position = position or UDim2.new(0, 0, 0, 0)
+    progressBar.Size = size or UDim2.new(1, -10, 0, 10) -- Add padding
+    progressBar.Position = position or UDim2.new(0, 5, 0, 5) -- Add padding
     progressBar.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
     progressBar.BorderSizePixel = 0
 
@@ -173,8 +183,8 @@ end
 function UIElements.CreateSlider(SkillTree, parent, minValue, maxValue, defaultValue, onChange, size, position)
     local sliderFrame = Instance.new("Frame")
     sliderFrame.Parent = parent
-    sliderFrame.Size = size or UDim2.new(1, 0, 0, 20)
-    sliderFrame.Position = position or UDim2.new(0, 0, 0, 0)
+    sliderFrame.Size = size or UDim2.new(1, -10, 0, 20) -- Add padding
+    sliderFrame.Position = position or UDim2.new(0, 5, 0, 5) -- Add padding
     sliderFrame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
     sliderFrame.BorderSizePixel = 0
 
@@ -191,8 +201,18 @@ function UIElements.CreateSlider(SkillTree, parent, minValue, maxValue, defaultV
     sliderHandle.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     sliderHandle.BorderSizePixel = 0
 
+    local valueLabel = Instance.new("TextLabel")
+    valueLabel.Parent = sliderFrame
+    valueLabel.Size = UDim2.new(0, 50, 1, 0)
+    valueLabel.Position = UDim2.new(1, -50, 0, 0)
+    valueLabel.BackgroundTransparency = 1
+    valueLabel.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
+    valueLabel.Font = SkillTree.SharedConfig.GetConfig("UI", "Font")
+    valueLabel.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize")
+
     local currentValue = defaultValue or minValue
     sliderHandle.Position = UDim2.new((currentValue - minValue) / (maxValue - minValue), 0, 0, 0)
+    valueLabel.Text = tostring(currentValue)
 
     local dragging = false
     local dragStartX, startPosX
@@ -220,6 +240,7 @@ function UIElements.CreateSlider(SkillTree, parent, minValue, maxValue, defaultV
             local newPosX = math.clamp(startPosX + delta / sliderBar.AbsoluteSize.X, 0, 1)
             sliderHandle.Position = UDim2.new(newPosX, 0, 0, 0)
             currentValue = math.floor(minValue + (maxValue - minValue) * newPosX)
+            valueLabel.Text = tostring(currentValue)
         end
     end)
 
@@ -227,7 +248,7 @@ function UIElements.CreateSlider(SkillTree, parent, minValue, maxValue, defaultV
 end
 
 function UIElements.CreateStyledFrame(SkillTree, parent, size, position)
-    local frame = UIElements.CreateFrame(SkillTree, parent, size, position)
+    local frame = UIElements.CreateDraggableFrame(SkillTree, parent, size or SkillTree.SharedConfig.GetConfig("UI", "Size"), position or SkillTree.SharedConfig.GetConfig("UI", "Position"))
     
     -- Add a subtle border
     local border = Instance.new("Frame")
@@ -246,7 +267,7 @@ function UIElements.CreateHeader(SkillTree, parent)
     local header = UIElements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, 40), UDim2.new(0, 0, 0, 0))
     header.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     
-    local titleLabel = UIElements.CreateTextLabel(SkillTree, header, "SkillTree", UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0))
+    local titleLabel = UIElements.CreateTextLabel(SkillTree, header, "SkillTree", UDim2.new(1, -10, 1, 0), UDim2.new(0, 5, 0, 0))
     titleLabel.TextSize = 20
     
     -- Add a subtle separator line
@@ -275,19 +296,7 @@ function UIElements.CreateContentArea(SkillTree, parent)
 end
 
 function UIElements.CreatePluginButton(SkillTree, parent, text, onClick)
-    local button = UIElements.CreateButton(SkillTree, parent, text, onClick)
-    
-    -- Add a subtle border
-    local border = Instance.new("Frame")
-    border.Parent = button
-    border.Size = UDim2.new(1, 2, 1, 2)
-    border.Position = UDim2.new(0, -1, 0, -1)
-    border.BackgroundTransparency = 1
-    border.BorderSizePixel = 1
-    border.BorderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Tertiary")
-    border.ZIndex = button.ZIndex - 1
-    
-    return button
+    return UIElements.CreateButton(SkillTree, parent, text, onClick)
 end
 
 return UIElements
