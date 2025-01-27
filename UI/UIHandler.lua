@@ -28,24 +28,65 @@ function UIHandler.CreateMainMenu(SkillTree)
     
     local mainFrame = SkillTree.UI.Elements.CreateDraggableFrame(SkillTree, screenGui, UDim2.new(0.6, 0, 0.7, 0), UDim2.new(0.2, 0, 0.15, 0))
     mainFrame.Visible = false -- Start with the menu hidden
+    mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    mainFrame.BackgroundTransparency = 0.1
+    mainFrame.BorderSizePixel = 0
+    
+    -- Add a subtle shadow effect
+    local shadow = Instance.new("ImageLabel")
+    shadow.Name = "Shadow"
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://132866248"
+    shadow.ImageColor3 = Color3.new(0, 0, 0)
+    shadow.ImageTransparency = 0.5
+    shadow.Size = UDim2.new(1, 10, 1, 10)
+    shadow.Position = UDim2.new(0, -5, 0, -5)
+    shadow.ZIndex = -1
+    shadow.Parent = mainFrame
+    
     SkillTree.Logger.Log("UIHandler", "Main frame created")
     
     -- Create header
     local header = SkillTree.UI.Elements.CreateFrame(SkillTree, mainFrame, UDim2.new(1, 0, 0, 50), UDim2.new(0, 0, 0, 0))
     header.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
+    header.BorderSizePixel = 0
+    
+    -- Add a gradient to the header
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 100, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 150))
+    })
+    gradient.Parent = header
+    
     local titleLabel = SkillTree.UI.Elements.CreateTextLabel(SkillTree, header, "SkillTree", UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0))
     titleLabel.TextSize = 24
+    titleLabel.TextColor3 = Color3.new(1, 1, 1)
+    titleLabel.Font = Enum.Font.GothamBold
+    
     SkillTree.Logger.Log("UIHandler", "Header created")
     
     -- Create left panel for plugins list
     local leftPanel = SkillTree.UI.Elements.CreateFrame(SkillTree, mainFrame, UDim2.new(0.3, 0, 1, -50), UDim2.new(0, 0, 0, 50))
+    leftPanel.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    leftPanel.BorderSizePixel = 0
+    
     local pluginsList = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, leftPanel, UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0))
+    pluginsList.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    pluginsList.ScrollBarThickness = 5
+    pluginsList.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 255)
     UIHandler.UpdatePluginsList(SkillTree, pluginsList)
     SkillTree.Logger.Log("UIHandler", "Left panel created")
     
     -- Create content area
     local contentArea = SkillTree.UI.Elements.CreateFrame(SkillTree, mainFrame, UDim2.new(0.7, 0, 1, -50), UDim2.new(0.3, 0, 0, 50))
+    contentArea.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    contentArea.BorderSizePixel = 0
+    
     local contentFrame = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, contentArea, UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0))
+    contentFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    contentFrame.ScrollBarThickness = 5
+    contentFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 255)
     SkillTree.Logger.Log("UIHandler", "Content area created")
     
     SkillTree.GlobalData.MainFrame = mainFrame
@@ -67,6 +108,19 @@ function UIHandler.UpdatePluginsList(SkillTree, pluginsList)
                 UIHandler.ShowPluginContent(SkillTree, name)
             end, UDim2.new(1, 0, 0, 30))
             button.Position = UDim2.new(0, 0, 0, pluginCount * 30)
+            button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            button.BorderSizePixel = 0
+            button.TextColor3 = Color3.new(1, 1, 1)
+            button.Font = Enum.Font.Gotham
+            
+            -- Add a hover effect
+            button.MouseEnter:Connect(function()
+                button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            end)
+            button.MouseLeave:Connect(function()
+                button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            end)
+            
             pluginCount = pluginCount + 1
         end
     end
@@ -92,14 +146,23 @@ function UIHandler.ShowPluginContent(SkillTree, pluginName)
                     item.Position = UDim2.new(0, 0, 0, (i - 1) * item.Size.Y.Offset)
                 else
                     local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, tostring(item), UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, (i - 1) * 30))
+                    label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+                    label.TextColor3 = Color3.new(1, 1, 1)
+                    label.Font = Enum.Font.Gotham
                 end
             end
             contentFrame.CanvasSize = UDim2.new(0, 0, 0, #content * 30)
         else
-            SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, 0))
+            local noContentLabel = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, 0))
+            noContentLabel.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            noContentLabel.TextColor3 = Color3.new(1, 1, 1)
+            noContentLabel.Font = Enum.Font.Gotham
         end
     else
-        SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, 0))
+        local noContentLabel = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, 0))
+        noContentLabel.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        noContentLabel.TextColor3 = Color3.new(1, 1, 1)
+        noContentLabel.Font = Enum.Font.Gotham
     end
 end
 
