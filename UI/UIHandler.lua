@@ -5,7 +5,7 @@ local isVisible = false
 
 function UIHandler.Init(SkillTree)
     SkillTree.Logger.Log("UIHandler", "Initializing UI system")
-    SkillTree.UI = {Elements = loadstring(game:HttpGet("https://raw.githubusercontent.com/LxckStxp/SkillTree/main/UI/UIElements.lua"))()}
+    SkillTree.UI = {Elements = SkillTree.UIElements} -- Use the pre-loaded UIElements
     UIHandler.CreateMainMenu(SkillTree)
     
     -- Set up toggle functionality
