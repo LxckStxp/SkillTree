@@ -82,10 +82,15 @@ function UIHandler.ShowPluginContent(SkillTree, pluginName)
     if plugin and plugin.GetContent then
         local content = plugin.GetContent(SkillTree)
         if content then
-            for _, item in ipairs(content) do
-                local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, item, UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, #contentFrame:GetChildren() * 30))
+            for i, item in ipairs(content) do
+                if item:IsA("GuiObject") then
+                    item.Parent = contentFrame
+                    item.Position = UDim2.new(0, 0, 0, (i - 1) * item.Size.Y.Offset)
+                else
+                    local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, item, UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, (i - 1) * 30))
+                end
             end
-            contentFrame.CanvasSize = UDim2.new(0, 0, 0, #contentFrame:GetChildren() * 30)
+            contentFrame.CanvasSize = UDim2.new(0, 0, 0, #content * 30)
         else
             SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, 0))
         end
