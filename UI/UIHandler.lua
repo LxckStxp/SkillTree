@@ -3,20 +3,37 @@
 local UIHandler = {}
 local isVisible = false
 
+function UIHandler.ToggleMenu(SkillTree)
+    isVisible = not isVisible
+    SkillTree.GlobalData.MainFrame.Visible = isVisible
+    
+    -- Add a smooth transition effect
+    if isVisible then
+        SkillTree.GlobalData.MainFrame:TweenSizeAndPosition(SkillTree.SharedConfig.GetConfig("UI", "Size"), SkillTree.SharedConfig.GetConfig("UI", "Position"), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
+    else
+        SkillTree.GlobalData.MainFrame:TweenSizeAndPosition(UDim2.new(0, 0, 0, 0), SkillTree.SharedConfig.GetConfig("UI", "Position"), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
+    end
+end
+
 function UIHandler.Init(SkillTree)
     SkillTree.Logger.Log("UIHandler", "Initializing UI system")
+    SkillTree.Logger.Log("UIHandler", "Checking if UIElements is loaded: " .. tostring(SkillTree.UIElements ~= nil))
     SkillTree.UI = {Elements = SkillTree.UIElements} -- Use the pre-loaded UIElements
+    SkillTree.Logger.Log("UIHandler", "UIElements assigned to SkillTree.UI.Elements")
     UIHandler.CreateMainMenu(SkillTree)
     
     -- Set up toggle functionality
     game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
         if not gameProcessed and input.KeyCode == Enum.KeyCode.RightControl then
+            SkillTree.Logger.Log("UIHandler", "Toggle key pressed")
             UIHandler.ToggleMenu(SkillTree)
         end
     end)
 end
 
-function UIHandler.OnStart(SkillTree) SkillTree.Logger.Log("UIHandler", "Starting UI system") end
+function UIHandler.OnStart(SkillTree) 
+    SkillTree.Logger.Log("UIHandler", "Starting UI system") 
+end
 
 function UIHandler.CreateMainMenu(SkillTree)
     SkillTree.Logger.Log("UIHandler", "Creating main menu")
