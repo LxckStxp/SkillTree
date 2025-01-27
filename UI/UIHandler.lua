@@ -17,6 +17,12 @@ end
 
 function UIHandler.Init(SkillTree)
     SkillTree.UI = {Elements = SkillTree.UIElements}
+    
+    -- Wait for SharedConfig to be fully initialized
+    while not SkillTree.SharedConfig or not SkillTree.SharedConfig.GetConfig("UI", "Primary") do
+        wait(0.1) -- Wait for a short period
+    end
+    
     UIHandler.CreateMainMenu(SkillTree)
     
     -- Set up toggle functionality
