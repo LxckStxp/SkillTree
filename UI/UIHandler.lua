@@ -84,9 +84,11 @@ function UIHandler.CreateHeader(SkillTree, parent)
     local headerColor = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     if headerColor and typeof(headerColor) == "Color3" then
         header.BackgroundColor3 = headerColor
+        SkillTree.Logger.Log("UIHandler", "Set header.BackgroundColor3 to: " .. tostring(header.BackgroundColor3))
     else
         SkillTree.Logger.Warn("UIHandler", "Invalid header color. Using default color.")
         header.BackgroundColor3 = Color3.fromRGB(20, 20, 20) -- Default color
+        SkillTree.Logger.Log("UIHandler", "Set header.BackgroundColor3 to default: " .. tostring(header.BackgroundColor3))
     end
     
     -- Center-aligned title with increased font size
@@ -103,9 +105,11 @@ function UIHandler.CreateHeader(SkillTree, parent)
     SkillTree.Logger.Log("UIHandler", "SeparatorColor: " .. tostring(separatorColor))
     if separatorColor and typeof(separatorColor) == "Color3" then
         separator.BackgroundColor3 = separatorColor
+        SkillTree.Logger.Log("UIHandler", "Set separator.BackgroundColor3 to: " .. tostring(separator.BackgroundColor3))
     else
         SkillTree.Logger.Warn("UIHandler", "Invalid separator color. Using default color.")
         separator.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Default color
+        SkillTree.Logger.Log("UIHandler", "Set separator.BackgroundColor3 to default: " .. tostring(separator.BackgroundColor3))
     end
     
     separator.BorderSizePixel = 0
