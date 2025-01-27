@@ -2,9 +2,17 @@
 
 local UIElements = {}
 
-function UIElements.CreateFrame(SkillTree)
+function UIElements.CreateScreenGui()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = game.Players.LocalPlayer.PlayerGui
+    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    screenGui.DisplayOrder = 100 -- Higher value ensures it's on top of other GUIs
+    return screenGui
+end
+
+function UIElements.CreateFrame(SkillTree, parent)
     local frame = Instance.new("Frame")
-    frame.Parent = game.Players.LocalPlayer.PlayerGui
+    frame.Parent = parent
     frame.Name = "SkillTreeMainFrame"
     frame.Size = SkillTree.SharedConfig.GetConfig("UI", "Size")
     frame.Position = SkillTree.SharedConfig.GetConfig("UI", "Position")
