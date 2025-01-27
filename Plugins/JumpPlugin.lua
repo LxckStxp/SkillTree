@@ -1,6 +1,8 @@
 -- main/Plugins/JumpPlugin.lua
 
-local JumpPlugin = {}
+local JumpPlugin = {
+    IsPlugin = true
+}
 
 function JumpPlugin.Init(SkillTree)
     SkillTree.Logger.Log("JumpPlugin", "Initialized")
