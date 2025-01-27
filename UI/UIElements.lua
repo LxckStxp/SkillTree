@@ -70,8 +70,8 @@ end
 function UIElements.CreateButton(SkillTree, parent, text, onClick, size, position)
     local button = Instance.new("TextButton")
     button.Parent = parent
-    button.Size = size or UDim2.new(0, 150, 0, 40)
-    button.Position = position or UDim2.new(0.5, -75, 0.5, 0)
+    button.Size = size or UDim2.new(1, 0, 0, 30)
+    button.Position = position or UDim2.new(0, 0, 0, 0)
     button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     button.BorderSizePixel = 0
     button.AutoButtonColor = false
@@ -80,9 +80,9 @@ function UIElements.CreateButton(SkillTree, parent, text, onClick, size, positio
     button.Font = SkillTree.SharedConfig.GetConfig("UI", "Font")
     button.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize")
     
-    -- Add hover effect
+    -- Add subtle hover effect
     button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(100, 210, 230)
+        button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
     end)
     button.MouseLeave:Connect(function()
         button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
@@ -96,11 +96,11 @@ end
 function UIElements.CreateTextBox(SkillTree, parent, placeholderText, size, position)
     local textBox = Instance.new("TextBox")
     textBox.Parent = parent
-    textBox.Size = size or UDim2.new(0, 200, 0, 30)
-    textBox.Position = position or UDim2.new(0.5, -100, 0.5, 0)
+    textBox.Size = size or UDim2.new(1, 0, 0, 30)
+    textBox.Position = position or UDim2.new(0, 0, 0, 0)
     textBox.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
     textBox.BorderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
-    textBox.BorderSizePixel = 2
+    textBox.BorderSizePixel = 1
     textBox.PlaceholderText = placeholderText or ""
     textBox.PlaceholderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
     textBox.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
@@ -128,9 +128,9 @@ function UIElements.CreateImageButton(SkillTree, parent, imageId, onClick, size,
     imageButton.Image = imageId or ""
     imageButton.MouseButton1Click:Connect(onClick)
     
-    -- Add hover effect
+    -- Add subtle hover effect
     imageButton.MouseEnter:Connect(function()
-        imageButton.ImageTransparency = 0.5
+        imageButton.ImageTransparency = 0.2
     end)
     imageButton.MouseLeave:Connect(function()
         imageButton.ImageTransparency = 0
@@ -146,7 +146,7 @@ function UIElements.CreateScrollingFrame(SkillTree, parent, size, position)
     scrollingFrame.Position = position or SkillTree.SharedConfig.GetConfig("UI", "Position")
     scrollingFrame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
     scrollingFrame.BorderSizePixel = 0
-    scrollingFrame.ScrollBarThickness = 5
+    scrollingFrame.ScrollBarThickness = 4
     scrollingFrame.ScrollBarImageColor3 = SkillTree.SharedConfig.GetConfig("UI", "Tertiary")
     scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     return scrollingFrame
@@ -155,8 +155,8 @@ end
 function UIElements.CreateProgressBar(SkillTree, parent, value, size, position)
     local progressBar = Instance.new("Frame")
     progressBar.Parent = parent
-    progressBar.Size = size or UDim2.new(0.5, 0, 0, 20)
-    progressBar.Position = position or UDim2.new(0.25, 0, 0.5, 0)
+    progressBar.Size = size or UDim2.new(1, 0, 0, 10)
+    progressBar.Position = position or UDim2.new(0, 0, 0, 0)
     progressBar.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
     progressBar.BorderSizePixel = 0
 
@@ -173,36 +173,26 @@ end
 function UIElements.CreateSlider(SkillTree, parent, minValue, maxValue, defaultValue, onChange, size, position)
     local sliderFrame = Instance.new("Frame")
     sliderFrame.Parent = parent
-    sliderFrame.Size = size or UDim2.new(1, 0, 0, 30)
+    sliderFrame.Size = size or UDim2.new(1, 0, 0, 20)
     sliderFrame.Position = position or UDim2.new(0, 0, 0, 0)
     sliderFrame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
     sliderFrame.BorderSizePixel = 0
 
     local sliderBar = Instance.new("Frame")
     sliderBar.Parent = sliderFrame
-    sliderBar.Size = UDim2.new(1, -20, 0.5, 0)
-    sliderBar.Position = UDim2.new(0, 10, 0.25, 0)
+    sliderBar.Size = UDim2.new(1, 0, 0.5, 0)
+    sliderBar.Position = UDim2.new(0, 0, 0.25, 0)
     sliderBar.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
     sliderBar.BorderSizePixel = 0
 
     local sliderHandle = Instance.new("Frame")
     sliderHandle.Parent = sliderBar
-    sliderHandle.Size = UDim2.new(0, 20, 1, 0)
+    sliderHandle.Size = UDim2.new(0, 10, 1, 0)
     sliderHandle.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     sliderHandle.BorderSizePixel = 0
 
-    local valueLabel = Instance.new("TextLabel")
-    valueLabel.Parent = sliderFrame
-    valueLabel.Size = UDim2.new(0, 50, 1, 0)
-    valueLabel.Position = UDim2.new(1, -50, 0, 0)
-    valueLabel.BackgroundTransparency = 1
-    valueLabel.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
-    valueLabel.Font = SkillTree.SharedConfig.GetConfig("UI", "Font")
-    valueLabel.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize")
-
     local currentValue = defaultValue or minValue
     sliderHandle.Position = UDim2.new((currentValue - minValue) / (maxValue - minValue), 0, 0, 0)
-    valueLabel.Text = tostring(currentValue)
 
     local dragging = false
     local dragStartX, startPosX
@@ -218,6 +208,9 @@ function UIElements.CreateSlider(SkillTree, parent, minValue, maxValue, defaultV
     game:GetService("UserInputService").InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = false
+            if onChange then
+                onChange(currentValue)
+            end
         end
     end)
 
@@ -227,10 +220,6 @@ function UIElements.CreateSlider(SkillTree, parent, minValue, maxValue, defaultV
             local newPosX = math.clamp(startPosX + delta / sliderBar.AbsoluteSize.X, 0, 1)
             sliderHandle.Position = UDim2.new(newPosX, 0, 0, 0)
             currentValue = math.floor(minValue + (maxValue - minValue) * newPosX)
-            valueLabel.Text = tostring(currentValue)
-            if onChange then
-                onChange(currentValue)
-            end
         end
     end)
 
@@ -240,110 +229,63 @@ end
 function UIElements.CreateStyledFrame(SkillTree, parent, size, position)
     local frame = UIElements.CreateFrame(SkillTree, parent, size, position)
     
-    -- Add a subtle gradient background
-    local gradient = Instance.new("UIGradient")
-    gradient.Parent = frame
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, SkillTree.SharedConfig.GetConfig("UI", "Primary")),
-        ColorSequenceKeypoint.new(1, SkillTree.SharedConfig.GetConfig("UI", "Secondary"))
-    })
-    gradient.Rotation = 45
-    
-    -- Add a soft shadow using an image
-    local shadow = Instance.new("ImageLabel")
-    shadow.Parent = frame
-    shadow.Size = UDim2.new(1, 10, 1, 10)
-    shadow.Position = UDim2.new(0.5, -5, 0.5, -5)
-    shadow.BackgroundTransparency = 1
-    shadow.Image = "rbxassetid://1341551064" -- Replace with your preferred shadow image ID
-    shadow.ImageColor3 = Color3.new(0, 0, 0)
-    shadow.ImageTransparency = 0.5
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    shadow.ZIndex = frame.ZIndex - 1
+    -- Add a subtle border
+    local border = Instance.new("Frame")
+    border.Parent = frame
+    border.Size = UDim2.new(1, 2, 1, 2)
+    border.Position = UDim2.new(0, -1, 0, -1)
+    border.BackgroundTransparency = 1
+    border.BorderSizePixel = 1
+    border.BorderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
+    border.ZIndex = frame.ZIndex - 1
     
     return frame
 end
 
 function UIElements.CreateHeader(SkillTree, parent)
-    local header = UIElements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, 50), UDim2.new(0, 0, 0, 0))
+    local header = UIElements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, 40), UDim2.new(0, 0, 0, 0))
     header.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     
-    -- Add a gradient to the header
-    local gradient = Instance.new("UIGradient")
-    gradient.Parent = header
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, SkillTree.SharedConfig.GetConfig("UI", "Primary")),
-        ColorSequenceKeypoint.new(1, SkillTree.SharedConfig.GetConfig("UI", "Tertiary"))
-    })
-    gradient.Rotation = 90
-    
     local titleLabel = UIElements.CreateTextLabel(SkillTree, header, "SkillTree", UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0))
-    titleLabel.TextSize = 24
+    titleLabel.TextSize = 20
     
-    -- Add a logo (you'll need to replace this with an actual image ID)
-    local logo = UIElements.CreateImageLabel(SkillTree, header, "rbxassetid://1234567890", UDim2.new(0, 40, 0, 40), UDim2.new(0, 5, 0.5, -20))
+    -- Add a subtle separator line
+    local separator = Instance.new("Frame")
+    separator.Parent = header
+    separator.Size = UDim2.new(1, 0, 0, 1)
+    separator.Position = UDim2.new(0, 0, 1, -1)
+    separator.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
+    separator.BorderSizePixel = 0
     
     return header
 end
 
 function UIElements.CreateLeftPanel(SkillTree, parent)
-    local leftPanel = UIElements.CreateFrame(SkillTree, parent, UDim2.new(0.3, 0, 1, -50), UDim2.new(0, 0, 0, 50))
+    local leftPanel = UIElements.CreateFrame(SkillTree, parent, UDim2.new(0.3, 0, 1, -40), UDim2.new(0, 0, 0, 40))
     leftPanel.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
-    
-    -- Add a subtle gradient to the left panel
-    local gradient = Instance.new("UIGradient")
-    gradient.Parent = leftPanel
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, SkillTree.SharedConfig.GetConfig("UI", "Background")),
-        ColorSequenceKeypoint.new(1, Color3.new(0.1, 0.1, 0.1))
-    })
-    gradient.Rotation = 90
     
     return leftPanel
 end
 
 function UIElements.CreateContentArea(SkillTree, parent)
-    local contentArea = UIElements.CreateFrame(SkillTree, parent, UDim2.new(0.7, 0, 1, -50), UDim2.new(0.3, 0, 0, 50))
+    local contentArea = UIElements.CreateFrame(SkillTree, parent, UDim2.new(0.7, 0, 1, -40), UDim2.new(0.3, 0, 0, 40))
     contentArea.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
-    
-    -- Add a subtle gradient to the content area
-    local gradient = Instance.new("UIGradient")
-    gradient.Parent = contentArea
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, SkillTree.SharedConfig.GetConfig("UI", "Background")),
-        ColorSequenceKeypoint.new(1, Color3.new(0.1, 0.1, 0.1))
-    })
-    gradient.Rotation = 90
     
     return contentArea
 end
 
 function UIElements.CreatePluginButton(SkillTree, parent, text, onClick)
-    local button = UIElements.CreateButton(SkillTree, parent, text, onClick, UDim2.new(1, 0, 0, 30))
+    local button = UIElements.CreateButton(SkillTree, parent, text, onClick)
     
-    -- Add hover effect with color transition
-    button.MouseEnter:Connect(function()
-        button:TweenSizeAndPosition(UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, button.Position.Y.Scale, button.Position.Y.Offset - 2), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.2, true)
-        button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Tertiary")
-    end)
-    button.MouseLeave:Connect(function()
-        button:TweenSizeAndPosition(UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, button.Position.Y.Scale, button.Position.Y.Offset + 2), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.2, true)
-        button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
-    end)
-    
-    -- Add a soft shadow using an image
-    local shadow = Instance.new("ImageLabel")
-    shadow.Parent = button
-    shadow.Size = UDim2.new(1, 5, 1, 5)
-    shadow.Position = UDim2.new(0.5, -2.5, 0.5, -2.5)
-    shadow.BackgroundTransparency = 1
-    shadow.Image = "rbxassetid://1341551064" -- Replace with your preferred shadow image ID
-    shadow.ImageColor3 = Color3.new(0, 0, 0)
-    shadow.ImageTransparency = 0.8
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    shadow.ZIndex = button.ZIndex - 1
+    -- Add a subtle border
+    local border = Instance.new("Frame")
+    border.Parent = button
+    border.Size = UDim2.new(1, 2, 1, 2)
+    border.Position = UDim2.new(0, -1, 0, -1)
+    border.BackgroundTransparency = 1
+    border.BorderSizePixel = 1
+    border.BorderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Tertiary")
+    border.ZIndex = button.ZIndex - 1
     
     return button
 end
