@@ -31,7 +31,7 @@ function UIHandler.CreateMainMenu(SkillTree)
     SkillTree.Logger.Log("UIHandler", "Main frame created")
     
     -- Create header
-    local header = SkillTree.UI.Elements.CreateHeader(SkillTree, mainFrame)
+    local header = UIHandler.CreateHeader(SkillTree, mainFrame)
     SkillTree.Logger.Log("UIHandler", "Header created")
     
     -- Create left panel for plugins list
@@ -50,6 +50,25 @@ function UIHandler.CreateMainMenu(SkillTree)
     SkillTree.GlobalData.ContentFrame = contentFrame
 end
 
+function UIHandler.CreateHeader(SkillTree, parent)
+    local header = SkillTree.UI.Elements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "HeaderHeight")), UDim2.new(0, 0, 0, 0))
+    header.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
+    
+    -- Center-aligned title with increased font size
+    local titleLabel = SkillTree.UI.Elements.CreateTitleLabel(SkillTree, header, "SkillTree", UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 1, 0), UDim2.new(0, 0, 0, 0))
+    titleLabel.Position = UDim2.new(0.5, -titleLabel.TextBounds.X/2, 0, 0)
+    
+    -- Add a subtle separator line
+    local separator = Instance.new("Frame")
+    separator.Parent = header
+    separator.Size = UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
+    separator.Position = UDim2.new(0, 0, 1, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
+    separator.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
+    separator.BorderSizePixel = 0
+    
+    return header
+end
+
 function UIHandler.UpdatePluginsList(SkillTree, pluginsList)
     for _, v in pairs(pluginsList:GetChildren()) do
         if v:IsA("GuiObject") then
@@ -58,18 +77,24 @@ function UIHandler.UpdatePluginsList(SkillTree, pluginsList)
     end
     
     local pluginCount = 0
-    local buttonHeight = 30 + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2 -- Include padding in button height
+    local buttonHeight = 30 + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2
     for name, module in pairs(SkillTree.Modules) do
         if module.IsPlugin then
-            local button = SkillTree.UI.Elements.CreatePluginButton(SkillTree, pluginsList, name, function()
+            local button = SkillTree.UI.Elements.CreateButton(SkillTree, pluginsList, name, function()
                 UIHandler.ShowPluginContent(SkillTree, name)
             end)
-            button.Position = UDim2.new(0, 0, 0, pluginCount * buttonHeight)
+            button.Position = UDim2.new(0, 0, 0, pluginCount * (buttonHeight + SkillTree.SharedConfig.GetConfig("UI", "SectionSpacing")))
+            
+            -- Add icon next to plugin name
+            local icon = SkillTree.UI.Elements.CreateImageLabel(SkillTree, button, UIHandler.GetPluginIcon(name))
+            icon.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding") + 3)
+            button.Text = "  " .. button.Text -- Add space for icon
+            
             pluginCount = pluginCount + 1
         end
     end
     
-    pluginsList.CanvasSize = UDim2.new(0, 0, 0, pluginCount * buttonHeight)
+    pluginsList.CanvasSize = UDim2.new(0, 0, 0, pluginCount * (buttonHeight + SkillTree.SharedConfig.GetConfig("UI", "SectionSpacing")))
 end
 
 function UIHandler.ShowPluginContent(SkillTree, pluginName)
@@ -84,17 +109,26 @@ function UIHandler.ShowPluginContent(SkillTree, pluginName)
     if plugin and plugin.GetContent then
         local content = plugin.GetContent(SkillTree)
         if content then
-            local itemHeight = 30 + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2 -- Include padding in item height
+            local itemHeight = 30 + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2
             for i, item in ipairs(content) do
+                local yPosition = (i - 1) * (itemHeight + SkillTree.SharedConfig.GetConfig("UI", "SectionSpacing"))
+                
                 if type(item) == "userdata" and item.IsA then
                     item.Parent = contentFrame
-                    item.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, (i - 1) * itemHeight)
+                    item.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition)
+                    
+                    -- Add icon if it's a button
+                    if item:IsA("TextButton") then
+                        local icon = SkillTree.UI.Elements.CreateImageLabel(SkillTree, item, UIHandler.GetActionIcon(item.Text))
+                        icon.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding") + 3)
+                        item.Text = "  " .. item.Text -- Add space for icon
+                    end
                 else
-                    local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, tostring(item), nil, UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, (i - 1) * itemHeight))
-                    label.Size = UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30)
+                    local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, tostring(item), UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30), UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition))
                 end
             end
-            contentFrame.CanvasSize = UDim2.new(0, 0, 0, #content * itemHeight)
+            
+            contentFrame.CanvasSize = UDim2.new(0, 0, 0, #content * (itemHeight + SkillTree.SharedConfig.GetConfig("UI", "SectionSpacing")))
         else
             SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", nil, UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0))
         end
@@ -112,6 +146,28 @@ function UIHandler.ToggleMenu(SkillTree)
         SkillTree.GlobalData.MainFrame:TweenSizeAndPosition(SkillTree.SharedConfig.GetConfig("UI", "Size"), SkillTree.SharedConfig.GetConfig("UI", "Position"), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
     else
         SkillTree.GlobalData.MainFrame:TweenSizeAndPosition(UDim2.new(0, 0, 0, 0), SkillTree.SharedConfig.GetConfig("UI", "Position"), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
+    end
+end
+
+-- Helper function to get plugin icons
+function UIHandler.GetPluginIcon(pluginName)
+    if pluginName == "JumpPlugin" then
+        return "rbxassetid://1234567" -- Replace with actual icon ID
+    elseif pluginName == "ActionPlugin" then
+        return "rbxassetid://1234568" -- Replace with actual icon ID
+    else
+        return "rbxassetid://1234569" -- Default icon ID
+    end
+end
+
+-- Helper function to get action icons
+function UIHandler.GetActionIcon(actionName)
+    if actionName == "Perform Action 1" then
+        return "rbxassetid://1234570" -- Replace with actual icon ID
+    elseif actionName == "Perform Action 2" then
+        return "rbxassetid://1234571" -- Replace with actual icon ID
+    else
+        return "rbxassetid://1234572" -- Default icon ID
     end
 end
 
