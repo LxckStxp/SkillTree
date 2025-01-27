@@ -9,4 +9,3 @@ function NetworkManager.SendData(data) SkillTree.Logger.Log("NetworkManager", "S
 function NetworkManager.ReceiveData() SkillTree.Logger.Log("NetworkManager", "Receiving data"); return "Received data" end
 
 return NetworkManager
- 
