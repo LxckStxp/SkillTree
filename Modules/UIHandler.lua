@@ -4,7 +4,7 @@ local UIHandler = {}
 
 function UIHandler.Init(SkillTree)
     SkillTree.Logger.Log("UIHandler", "Initializing UI system")
-    SkillTree.UI = {Elements = loadstring(game:HttpGet("https://raw.githubusercontent.com/SkillTree/UI/UIElements.lua"))()}
+    SkillTree.UI = {Elements = loadstring(game:HttpGet("https://raw.githubusercontent.com/LxckStxp/SkillTree/main/UI/UIElements.lua"))()}
     UIHandler.CreateInitialUI(SkillTree)
 end
 
