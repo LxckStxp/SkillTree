@@ -46,6 +46,8 @@ function UIHandler.OnStart(SkillTree)
     SkillTree.Logger.Log("UIHandler", "Starting UI system") 
 end
 
+-- main/UI/UIHandler.lua
+
 function UIHandler.CreateMainMenu(SkillTree)
     SkillTree.Logger.Log("UIHandler", "Creating main menu")
     local screenGui = SkillTree.UI.Elements.CreateScreenGui(SkillTree)
@@ -57,26 +59,33 @@ function UIHandler.CreateMainMenu(SkillTree)
     local mainFrame = SkillTree.UI.Elements.CreateStyledFrame(SkillTree, screenGui)
     mainFrame.Visible = false -- Start with the menu hidden
     SkillTree.Logger.Log("UIHandler", "Main frame created")
+    SkillTree.Logger.Log("UIHandler", "MainFrame.BackgroundColor3: " .. tostring(mainFrame.BackgroundColor3))
     
     -- Create header
     local header = UIHandler.CreateHeader(SkillTree, mainFrame)
     SkillTree.Logger.Log("UIHandler", "Header created")
+    SkillTree.Logger.Log("UIHandler", "Header.BackgroundColor3: " .. tostring(header.BackgroundColor3))
     
     -- Create left panel for plugins list
     local leftPanel = SkillTree.UI.Elements.CreateLeftPanel(SkillTree, mainFrame)
+    SkillTree.Logger.Log("UIHandler", "LeftPanel.BackgroundColor3: " .. tostring(leftPanel.BackgroundColor3))
     local pluginsList = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, leftPanel)
     UIHandler.UpdatePluginsList(SkillTree, pluginsList)
     SkillTree.Logger.Log("UIHandler", "Left panel created")
+    SkillTree.Logger.Log("UIHandler", "PluginsList.BackgroundColor3: " .. tostring(pluginsList.BackgroundColor3))
     
     -- Create content area
     local contentArea = SkillTree.UI.Elements.CreateContentArea(SkillTree, mainFrame)
+    SkillTree.Logger.Log("UIHandler", "ContentArea.BackgroundColor3: " .. tostring(contentArea.BackgroundColor3))
     local contentFrame = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, contentArea)
     SkillTree.Logger.Log("UIHandler", "Content area created")
+    SkillTree.Logger.Log("UIHandler", "ContentFrame.BackgroundColor3: " .. tostring(contentFrame.BackgroundColor3))
     
     SkillTree.GlobalData.MainFrame = mainFrame
     SkillTree.GlobalData.PluginsList = pluginsList
     SkillTree.GlobalData.ContentFrame = contentFrame
 end
+
 
 function UIHandler.CreateHeader(SkillTree, parent)
     local header = SkillTree.UI.Elements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "HeaderHeight")), UDim2.new(0, 0, 0, 0))
