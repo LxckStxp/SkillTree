@@ -26,7 +26,7 @@ function UIHandler.CreateMainMenu(SkillTree)
         return
     end
     
-    local mainFrame = SkillTree.UI.Elements.CreateStyledFrame(SkillTree, screenGui, UDim2.new(0.6, 0, 0.7, 0), UDim2.new(0.2, 0, 0.15, 0))
+    local mainFrame = SkillTree.UI.Elements.CreateStyledFrame(SkillTree, screenGui)
     mainFrame.Visible = false -- Start with the menu hidden
     SkillTree.Logger.Log("UIHandler", "Main frame created")
     
@@ -36,13 +36,13 @@ function UIHandler.CreateMainMenu(SkillTree)
     
     -- Create left panel for plugins list
     local leftPanel = SkillTree.UI.Elements.CreateLeftPanel(SkillTree, mainFrame)
-    local pluginsList = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, leftPanel, UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0))
+    local pluginsList = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, leftPanel)
     UIHandler.UpdatePluginsList(SkillTree, pluginsList)
     SkillTree.Logger.Log("UIHandler", "Left panel created")
     
     -- Create content area
     local contentArea = SkillTree.UI.Elements.CreateContentArea(SkillTree, mainFrame)
-    local contentFrame = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, contentArea, UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0))
+    local contentFrame = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, contentArea)
     SkillTree.Logger.Log("UIHandler", "Content area created")
     
     SkillTree.GlobalData.MainFrame = mainFrame
@@ -58,17 +58,18 @@ function UIHandler.UpdatePluginsList(SkillTree, pluginsList)
     end
     
     local pluginCount = 0
+    local buttonHeight = 30 + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2 -- Include padding in button height
     for name, module in pairs(SkillTree.Modules) do
         if module.IsPlugin then
             local button = SkillTree.UI.Elements.CreatePluginButton(SkillTree, pluginsList, name, function()
                 UIHandler.ShowPluginContent(SkillTree, name)
             end)
-            button.Position = UDim2.new(0, 0, 0, pluginCount * 30)
+            button.Position = UDim2.new(0, 0, 0, pluginCount * buttonHeight)
             pluginCount = pluginCount + 1
         end
     end
     
-    pluginsList.CanvasSize = UDim2.new(0, 0, 0, pluginCount * 30)
+    pluginsList.CanvasSize = UDim2.new(0, 0, 0, pluginCount * buttonHeight)
 end
 
 function UIHandler.ShowPluginContent(SkillTree, pluginName)
@@ -83,20 +84,22 @@ function UIHandler.ShowPluginContent(SkillTree, pluginName)
     if plugin and plugin.GetContent then
         local content = plugin.GetContent(SkillTree)
         if content then
+            local itemHeight = 30 + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2 -- Include padding in item height
             for i, item in ipairs(content) do
                 if type(item) == "userdata" and item.IsA then
                     item.Parent = contentFrame
-                    item.Position = UDim2.new(0, 0, 0, (i - 1) * item.Size.Y.Offset)
+                    item.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, (i - 1) * itemHeight)
                 else
-                    local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, tostring(item), UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, (i - 1) * 30))
+                    local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, tostring(item), nil, UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, (i - 1) * itemHeight))
+                    label.Size = UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30)
                 end
             end
-            contentFrame.CanvasSize = UDim2.new(0, 0, 0, #content * 30)
+            contentFrame.CanvasSize = UDim2.new(0, 0, 0, #content * itemHeight)
         else
-            SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, 0))
+            SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", nil, UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0))
         end
     else
-        SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, 0))
+        SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", nil, UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0))
     end
 end
 
