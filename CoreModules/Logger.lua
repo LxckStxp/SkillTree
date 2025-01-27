@@ -9,4 +9,3 @@ function Logger.Error(module, msg) error(string.format("[%s] ERROR: %s", module,
 function Logger.Init(SkillTree) SkillTree.Logger = Logger end
 
 return Logger
- 
