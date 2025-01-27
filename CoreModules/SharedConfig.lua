@@ -3,23 +3,25 @@
 local SharedConfig = {
     UI = {
         -- Menu size and position
-        Size = UDim2.new(0, 400, 0, 300), -- Increased size
-        Position = UDim2.new(0.5, -200, 0.5, -150), -- Adjusted position for new size
+        Size = UDim2.new(0, 400, 0, 300),
+        Position = UDim2.new(0.5, -200, 0.5, -150),
         
         -- Font settings
         FontSize = 20,
-        Font = Enum.Font.Gotham,
+        TitleFontSize = 24, -- New variable for title font size
+        Font = Enum.Font.Roboto, -- Changed to Roboto for a modern look
         
-        -- Color palette (dark mode theme with less clashing colors)
+        -- Color palette (dark mode theme with subtle variations)
         Primary = Color3.fromRGB(45, 45, 45), -- Dark gray
-        Secondary = Color3.fromRGB(60, 60, 60), -- Slightly lighter gray
-        Tertiary = Color3.fromRGB(75, 75, 75), -- Even lighter gray
+        Secondary = Color3.fromRGB(55, 55, 55), -- Slightly lighter gray for section backgrounds
+        Tertiary = Color3.fromRGB(65, 65, 65), -- Even lighter gray for borders
         Accent = Color3.fromRGB(100, 180, 255), -- Soft blue accent
-        Text = Color3.fromRGB(220, 220, 220), -- Light gray text
+        Text = Color3.fromRGB(240, 240, 240), -- Soft white text for better readability
         Background = Color3.fromRGB(30, 30, 30), -- Dark background
         
-        -- Padding
+        -- Padding and spacing
         Padding = 10,
+        SectionSpacing = 20, -- New variable for spacing between sections
         
         -- Other UI settings
         ScrollBarThickness = 5,
