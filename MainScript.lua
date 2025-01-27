@@ -15,6 +15,9 @@ local function InitSkillTree()
     ModuleLoader.LoadModule("CoreUtils", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/CoreUtils.lua", _G.SkillTree)
     ModuleLoader.LoadModule("NetworkManager", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/NetworkManager.lua", _G.SkillTree)
     
+    -- Load UIElements
+    ModuleLoader.LoadModule("UIElements", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/UI/UIElements.lua", _G.SkillTree)
+    
     -- Load plugins
     local plugins = {"ActionPlugin", "JumpPlugin", "ToggleTestPlugin"}
     for _, pluginName in ipairs(plugins) do
@@ -26,9 +29,6 @@ local function InitSkillTree()
         if module.OnStart then module.OnStart(_G.SkillTree) end
     end
     
-    -- Load UIElements
-    ModuleLoader.LoadModule("UIElements", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/UI/UIElements.lua", _G.SkillTree)
-    
     -- Load UIHandler last
     ModuleLoader.LoadModule("UIHandler", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/UI/UIHandler.lua", _G.SkillTree)
     
@@ -39,4 +39,3 @@ local function InitSkillTree()
 end
 
 InitSkillTree()
- 
