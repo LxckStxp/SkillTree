@@ -47,4 +47,3 @@ function SharedConfig.Init(SkillTree)
 end
 
 return SharedConfig
- 
