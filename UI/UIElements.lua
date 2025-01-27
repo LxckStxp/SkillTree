@@ -249,13 +249,17 @@ function UIElements.CreateStyledFrame(SkillTree, parent, size, position)
     })
     gradient.Rotation = 45
     
-    -- Add a shadow effect
-    local shadow = Instance.new("Frame")
+    -- Add a soft shadow using an image
+    local shadow = Instance.new("ImageLabel")
     shadow.Parent = frame
-    shadow.Size = UDim2.new(1, 5, 1, 5)
-    shadow.Position = UDim2.new(0.5, -2.5, 0.5, -2.5)
-    shadow.BackgroundTransparency = 0.5
-    shadow.BackgroundColor3 = Color3.new(0, 0, 0)
+    shadow.Size = UDim2.new(1, 10, 1, 10)
+    shadow.Position = UDim2.new(0.5, -5, 0.5, -5)
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://1341551064" -- Replace with your preferred shadow image ID
+    shadow.ImageColor3 = Color3.new(0, 0, 0)
+    shadow.ImageTransparency = 0.5
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
     shadow.ZIndex = frame.ZIndex - 1
     
     return frame
@@ -328,31 +332,20 @@ function UIElements.CreatePluginButton(SkillTree, parent, text, onClick)
         button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     end)
     
-    -- Add a subtle shadow
-    local shadow = Instance.new("Frame")
+    -- Add a soft shadow using an image
+    local shadow = Instance.new("ImageLabel")
     shadow.Parent = button
-    shadow.Size = UDim2.new(1, 2, 1, 2)
-    shadow.Position = UDim2.new(0.5, -1, 0.5, -1)
-    shadow.BackgroundTransparency = 0.8
-    shadow.BackgroundColor3 = Color3.new(0, 0, 0)
+    shadow.Size = UDim2.new(1, 5, 1, 5)
+    shadow.Position = UDim2.new(0.5, -2.5, 0.5, -2.5)
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://1341551064" -- Replace with your preferred shadow image ID
+    shadow.ImageColor3 = Color3.new(0, 0, 0)
+    shadow.ImageTransparency = 0.8
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
     shadow.ZIndex = button.ZIndex - 1
     
     return button
-end
-
-function UIElements.CreateContentLabel(SkillTree, parent, text, size, position)
-    local label = UIElements.CreateTextLabel(SkillTree, parent, text, size, position)
-    
-    -- Add a subtle background for the label
-    local background = Instance.new("Frame")
-    background.Parent = label
-    background.Size = UDim2.new(1, 0, 1, 0)
-    background.Position = UDim2.new(0, 0, 0, 0)
-    background.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
-    background.BackgroundTransparency = 0.8
-    background.ZIndex = label.ZIndex - 1
-    
-    return label
 end
 
 return UIElements
