@@ -1,5 +1,5 @@
 -- Executor.lua
 -- Put this in your executor of choice to load SkillTree
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/SkillTree/Main/MainScript.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Main/MainScript.lua"))()
 
