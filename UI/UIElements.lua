@@ -16,7 +16,12 @@ function UIElements.CreateFrame(SkillTree, parent, size, position)
     frame.Parent = parent
     frame.Size = size or SkillTree.SharedConfig.GetConfig("UI", "Size")
     frame.Position = position or SkillTree.SharedConfig.GetConfig("UI", "Position")
-    frame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
+    local backgroundColor = SkillTree.SharedConfig.GetConfig("UI", "Background")
+    if backgroundColor and typeof(backgroundColor) == "Color3" then
+        frame.BackgroundColor = backgroundColor
+    else
+        frame.BackgroundColor = Color3.fromRGB(30, 30, 30) -- Default color
+    end
     frame.BorderSizePixel = 0
     return frame
 end
