@@ -170,4 +170,71 @@ function UIElements.CreateProgressBar(SkillTree, parent, value, size, position)
     return progressBar, progress
 end
 
+function UIElements.CreateSlider(SkillTree, parent, minValue, maxValue, defaultValue, onChange, size, position)
+    local sliderFrame = Instance.new("Frame")
+    sliderFrame.Parent = parent
+    sliderFrame.Size = size or UDim2.new(1, 0, 0, 30)
+    sliderFrame.Position = position or UDim2.new(0, 0, 0, 0)
+    sliderFrame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
+    sliderFrame.BorderSizePixel = 0
+
+    local sliderBar = Instance.new("Frame")
+    sliderBar.Parent = sliderFrame
+    sliderBar.Size = UDim2.new(1, -20, 0.5, 0)
+    sliderBar.Position = UDim2.new(0, 10, 0.25, 0)
+    sliderBar.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
+    sliderBar.BorderSizePixel = 0
+
+    local sliderHandle = Instance.new("Frame")
+    sliderHandle.Parent = sliderBar
+    sliderHandle.Size = UDim2.new(0, 20, 1, 0)
+    sliderHandle.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
+    sliderHandle.BorderSizePixel = 0
+
+    local valueLabel = Instance.new("TextLabel")
+    valueLabel.Parent = sliderFrame
+    valueLabel.Size = UDim2.new(0, 50, 1, 0)
+    valueLabel.Position = UDim2.new(1, -50, 0, 0)
+    valueLabel.BackgroundTransparency = 1
+    valueLabel.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
+    valueLabel.Font = SkillTree.SharedConfig.GetConfig("UI", "Font")
+    valueLabel.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize")
+
+    local currentValue = defaultValue or minValue
+    sliderHandle.Position = UDim2.new((currentValue - minValue) / (maxValue - minValue), 0, 0, 0)
+    valueLabel.Text = tostring(currentValue)
+
+    local dragging = false
+    local dragStartX, startPosX
+
+    sliderHandle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStartX = input.Position.X
+            startPosX = sliderHandle.Position.X.Scale
+        end
+    end)
+
+    game:GetService("UserInputService").InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+            local delta = input.Position.X - dragStartX
+            local newPosX = math.clamp(startPosX + delta / sliderBar.AbsoluteSize.X, 0, 1)
+            sliderHandle.Position = UDim2.new(newPosX, 0, 0, 0)
+            currentValue = math.floor(minValue + (maxValue - minValue) * newPosX)
+            valueLabel.Text = tostring(currentValue)
+            if onChange then
+                onChange(currentValue)
+            end
+        end
+    end)
+
+    return sliderFrame, function() return currentValue end
+end
+
 return UIElements
