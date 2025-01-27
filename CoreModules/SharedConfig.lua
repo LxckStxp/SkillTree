@@ -20,8 +20,8 @@ local SharedConfig = {
         Background = Color3.fromRGB(30, 30, 30), -- Dark background
         
         -- Padding and spacing
-        Padding = 10,
-        SectionSpacing = 20, -- New variable for spacing between sections
+        Padding = 5, -- Reduced from 10 to 5
+        SectionSpacing = 10, -- Reduced from 20 to 10
         
         -- Other UI settings
         ScrollBarThickness = 5,
