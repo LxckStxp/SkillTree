@@ -84,12 +84,6 @@ function UIHandler.UpdatePluginsList(SkillTree, pluginsList)
                 UIHandler.ShowPluginContent(SkillTree, name)
             end)
             button.Position = UDim2.new(0, 0, 0, pluginCount * (buttonHeight + SkillTree.SharedConfig.GetConfig("UI", "SectionSpacing")))
-            
-            -- Add icon next to plugin name
-            local icon = SkillTree.UI.Elements.CreateImageLabel(SkillTree, button, UIHandler.GetPluginIcon(name))
-            icon.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding") + 3)
-            button.Text = "  " .. button.Text -- Add space for icon
-            
             pluginCount = pluginCount + 1
         end
     end
@@ -116,15 +110,10 @@ function UIHandler.ShowPluginContent(SkillTree, pluginName)
                 if type(item) == "userdata" and item.IsA then
                     item.Parent = contentFrame
                     item.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition)
-                    
-                    -- Add icon if it's a button
-                    if item:IsA("TextButton") then
-                        local icon = SkillTree.UI.Elements.CreateImageLabel(SkillTree, item, UIHandler.GetActionIcon(item.Text))
-                        icon.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding") + 3)
-                        item.Text = "  " .. item.Text -- Add space for icon
-                    end
                 else
-                    local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, tostring(item), UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30), UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition))
+                    local label = UIHandler.CreateWrappedTextLabel(SkillTree, contentFrame, tostring(item), UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30), UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition))
+                    itemHeight = label.TextBounds.Y + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2
+                    label.Size = UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, itemHeight)
                 end
             end
             
@@ -149,26 +138,20 @@ function UIHandler.ToggleMenu(SkillTree)
     end
 end
 
--- Helper function to get plugin icons
-function UIHandler.GetPluginIcon(pluginName)
-    if pluginName == "JumpPlugin" then
-        return "rbxassetid://1234567" -- Replace with actual icon ID
-    elseif pluginName == "ActionPlugin" then
-        return "rbxassetid://1234568" -- Replace with actual icon ID
-    else
-        return "rbxassetid://1234569" -- Default icon ID
-    end
-end
-
--- Helper function to get action icons
-function UIHandler.GetActionIcon(actionName)
-    if actionName == "Perform Action 1" then
-        return "rbxassetid://1234570" -- Replace with actual icon ID
-    elseif actionName == "Perform Action 2" then
-        return "rbxassetid://1234571" -- Replace with actual icon ID
-    else
-        return "rbxassetid://1234572" -- Default icon ID
-    end
+function UIHandler.CreateWrappedTextLabel(SkillTree, parent, text, size, position)
+    local label = Instance.new("TextLabel")
+    label.Parent = parent
+    label.Size = size or UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30)
+    label.Position = position or UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text or ""
+    label.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
+    label.Font = SkillTree.SharedConfig.GetConfig("UI", "Font")
+    label.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize")
+    label.TextWrapped = true
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Top
+    return label
 end
 
 return UIHandler
