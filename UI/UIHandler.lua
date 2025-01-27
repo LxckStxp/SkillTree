@@ -60,16 +60,18 @@ function UIHandler.UpdatePluginsList(SkillTree, pluginsList)
         end
     end
     
+    local pluginCount = 0
     for name, module in pairs(SkillTree.Modules) do
         if module.IsPlugin then
             local button = SkillTree.UI.Elements.CreateButton(SkillTree, pluginsList, name, function()
                 UIHandler.ShowPluginContent(SkillTree, name)
             end, UDim2.new(1, 0, 0, 30))
-            button.Position = UDim2.new(0, 0, 0, #pluginsList:GetChildren() * 30)
+            button.Position = UDim2.new(0, 0, 0, pluginCount * 30)
+            pluginCount = pluginCount + 1
         end
     end
     
-    pluginsList.CanvasSize = UDim2.new(0, 0, 0, #pluginsList:GetChildren() * 30)
+    pluginsList.CanvasSize = UDim2.new(0, 0, 0, pluginCount * 30)
 end
 
 function UIHandler.ShowPluginContent(SkillTree, pluginName)
