@@ -2,7 +2,11 @@
 
 _G.SkillTree = {Modules = {}, GlobalData = {}}
 
-local ModuleLoader = ModuleLoader.LoadModule("ModuleLoader", "https://github.com/SkillTree/Main/ModuleLoader.lua", _G.SkillTree)
+-- Load ModuleLoader
+local ModuleLoader = loadstring(game:HttpGet("https://github.com/SkillTree/Main/ModuleLoader.lua"))()
+
+-- Use ModuleLoader to load itself into SkillTree
+ModuleLoader.LoadModule("ModuleLoader", "https://github.com/SkillTree/Main/ModuleLoader.lua", _G.SkillTree)
 
 local function InitSkillTree()
     ModuleLoader.LoadModule("SharedConfig", "https://github.com/SkillTree/CoreModules/SharedConfig.lua", _G.SkillTree)
@@ -17,4 +21,3 @@ local function InitSkillTree()
 end
 
 InitSkillTree()
- 
