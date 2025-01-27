@@ -29,7 +29,7 @@ function UIHandler.Init(SkillTree)
             UIHandler.ToggleMenu(SkillTree)
         end
     end)
-end 
+end
 
 function UIHandler.OnStart(SkillTree) 
     SkillTree.Logger.Log("UIHandler", "Starting UI system") 
