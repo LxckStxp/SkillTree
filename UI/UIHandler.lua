@@ -87,11 +87,11 @@ function UIHandler.ShowPluginContent(SkillTree, pluginName)
         local content = plugin.GetContent(SkillTree)
         if content then
             for i, item in ipairs(content) do
-                if item:IsA("GuiObject") then
+                if type(item) == "userdata" and item.IsA then
                     item.Parent = contentFrame
                     item.Position = UDim2.new(0, 0, 0, (i - 1) * item.Size.Y.Offset)
                 else
-                    local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, item, UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, (i - 1) * 30))
+                    local label = SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, tostring(item), UDim2.new(1, 0, 0, 30), UDim2.new(0, 0, 0, (i - 1) * 30))
                 end
             end
             contentFrame.CanvasSize = UDim2.new(0, 0, 0, #content * 30)
