@@ -1,4 +1,4 @@
--- main/Main/ModuleLoader.lua
+-- main/ModuleLoader.lua
 
 local ModuleLoader = {}
 
@@ -51,4 +51,3 @@ function ModuleLoader.LoadModule(name, url, SkillTree)
 end
 
 return ModuleLoader
- 
