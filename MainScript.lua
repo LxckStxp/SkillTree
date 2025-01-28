@@ -12,8 +12,6 @@ local function InitSkillTree()
     -- Load core modules
     ModuleLoader.LoadModule("SharedConfig", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/CoreModules/SharedConfig.lua", _G.SkillTree)
     ModuleLoader.LoadModule("Logger", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/CoreModules/Logger.lua", _G.SkillTree)
-    ModuleLoader.LoadModule("CoreUtils", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/CoreUtils.lua", _G.SkillTree)
-    ModuleLoader.LoadModule("NetworkManager", "https://raw.githubusercontent.com/LxckStxp/SkillTree/main/Modules/NetworkManager.lua", _G.SkillTree)
     
     -- Initialize core modules
     for _, module in pairs(_G.SkillTree.Modules) do
@@ -48,4 +46,3 @@ local function InitSkillTree()
 end
 
 InitSkillTree()
- 
