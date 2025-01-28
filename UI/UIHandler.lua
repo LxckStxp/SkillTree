@@ -7,7 +7,6 @@ function UIHandler.ToggleMenu(SkillTree)
     isVisible = not isVisible
     SkillTree.GlobalData.MainFrame.Visible = isVisible
     
-    -- Add a smooth transition effect
     if isVisible then
         SkillTree.GlobalData.MainFrame:TweenSizeAndPosition(SkillTree.SharedConfig.GetConfig("UI", "Size"), SkillTree.SharedConfig.GetConfig("UI", "Position"), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
     else
@@ -18,14 +17,12 @@ end
 function UIHandler.Init(SkillTree)
     SkillTree.UI = {Elements = SkillTree.UIElements}
     
-    -- Wait for SharedConfig to be fully initialized
     while not SkillTree.SharedConfig or not SkillTree.SharedConfig.GetConfig("UI", "Primary") do
-        wait(0.1) -- Wait for a short period
+        wait(0.1)
     end
     
     UIHandler.CreateMainMenu(SkillTree)
     
-    -- Set up toggle functionality
     game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
         if not gameProcessed and input.KeyCode == Enum.KeyCode.RightControl then
             UIHandler.ToggleMenu(SkillTree)
@@ -33,9 +30,7 @@ function UIHandler.Init(SkillTree)
     end)
 end
 
-function UIHandler.OnStart(SkillTree) 
-    -- Empty function, can be used for future expansion
-end
+function UIHandler.OnStart(SkillTree) end
 
 function UIHandler.CreateMainMenu(SkillTree)
     local screenGui = SkillTree.UI.Elements.CreateScreenGui(SkillTree)
@@ -60,12 +55,7 @@ end
 
 function UIHandler.CreateHeader(SkillTree, parent)
     local header = SkillTree.UI.Elements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "HeaderHeight")), UDim2.new(0, 0, 0, 0))
-    local headerColor = SkillTree.SharedConfig.GetConfig("UI", "Primary")
-    if headerColor and typeof(headerColor) == "Color3" then
-        header.BackgroundColor3 = headerColor
-    else
-        header.BackgroundColor3 = Color3.fromRGB(20, 20, 20) -- Default color
-    end
+    header.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
     
     local titleLabel = SkillTree.UI.Elements.CreateTitleLabel(SkillTree, header, "SkillTree", UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 1, 0), UDim2.new(0, 0, 0, 0))
     titleLabel.Position = UDim2.new(0.5, -titleLabel.TextBounds.X/2, 0, 0)
@@ -74,12 +64,7 @@ function UIHandler.CreateHeader(SkillTree, parent)
     separator.Parent = header
     separator.Size = UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
     separator.Position = UDim2.new(0, 0, 1, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
-    local separatorColor = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
-    if separatorColor and typeof(separatorColor) == "Color3" then
-        separator.BackgroundColor3 = separatorColor
-    else
-        separator.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Default color
-    end
+    separator.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
     separator.BorderSizePixel = 0
     
     return header
