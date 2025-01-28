@@ -21,6 +21,13 @@ function UIHandler.Init(SkillTree)
         wait(0.1)
     end
     
+    print("UIHandler.Init: SkillTree.UI.Elements:", SkillTree.UI.Elements)
+    
+    if not SkillTree.UI.Elements then
+        error("UIElements not loaded")
+        return
+    end
+    
     UIHandler.CreateMainMenu(SkillTree)
     
     game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
@@ -29,6 +36,7 @@ function UIHandler.Init(SkillTree)
         end
     end)
 end
+
 
 function UIHandler.OnStart(SkillTree) end
 
