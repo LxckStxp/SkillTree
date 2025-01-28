@@ -1,164 +1,174 @@
--- main/UI/UIElements.lua
+-- main/UI/UIHandler.lua
 
-local UIElements = {}
+local UIHandler = {}
+local isVisible = false
 
-function UIElements.CreateScreenGui(SkillTree)
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Parent = game.Players.LocalPlayer.PlayerGui
-    if not screenGui.Parent then return nil end
-    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    screenGui.DisplayOrder = 100
-    return screenGui
-end
-
-function UIElements.CreateFrame(SkillTree, parent, size, position)
-    local frame = Instance.new("Frame")
-    frame.Parent = parent
-    frame.Size = size or SkillTree.SharedConfig.GetConfig("UI", "Size")
-    frame.Position = position or SkillTree.SharedConfig.GetConfig("UI", "Position")
-    frame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
-    frame.BorderSizePixel = 0
-    return frame
-end
-
-function UIElements.CreateDraggableFrame(SkillTree, parent, size, position)
-    local frame = UIElements.CreateFrame(SkillTree, parent, size, position)
+function UIHandler.ToggleMenu(SkillTree)
+    isVisible = not isVisible
+    SkillTree.GlobalData.MainFrame.Visible = isVisible
     
-    local dragging = false
-    local dragInput, mousePos, framePos
+    if isVisible then
+        SkillTree.GlobalData.MainFrame:TweenSizeAndPosition(SkillTree.SharedConfig.GetConfig("UI", "Size"), SkillTree.SharedConfig.GetConfig("UI", "Position"), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
+    else
+        SkillTree.GlobalData.MainFrame:TweenSizeAndPosition(UDim2.new(0, 0, 0, 0), SkillTree.SharedConfig.GetConfig("UI", "Position"), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
+    end
+end
 
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            mousePos = input.Position
-            framePos = frame.Position
-            
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
+function UIHandler.Init(SkillTree)
+    print("UIHandler.Init: Starting initialization")
+    if not SkillTree.UIElements then
+        print("UIHandler.Init: UIElements not found")
+        return
+    end
+    
+    SkillTree.UI = {Elements = SkillTree.UIElements}
+    
+    if not SkillTree.SharedConfig then
+        print("UIHandler.Init: SharedConfig not found")
+        return
+    end
+    
+    while not SkillTree.SharedConfig or not SkillTree.SharedConfig.GetConfig("UI", "Primary") do
+        wait(0.1)
+    end
+    
+    print("UIHandler.Init: Creating main menu")
+    local success, errorMsg = pcall(function()
+        UIHandler.CreateMainMenu(SkillTree)
+    end)
+    
+    if not success then
+        print("UIHandler.Init: Failed to create main menu. Error: " .. tostring(errorMsg))
+        return
+    end
+    
+    print("UIHandler.Init: Setting up toggle functionality")
+    game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+        if not gameProcessed and input.KeyCode == Enum.KeyCode.RightControl then
+            UIHandler.ToggleMenu(SkillTree)
+        end
+    end)
+    
+    print("UIHandler.Init: Initialization completed successfully")
+end
+
+function UIHandler.OnStart(SkillTree) end
+
+function UIHandler.CreateMainMenu(SkillTree)
+    print("UIHandler.CreateMainMenu: Starting to create main menu")
+    local screenGui = SkillTree.UI.Elements.CreateScreenGui(SkillTree)
+    if not screenGui then
+        print("UIHandler.CreateMainMenu: Failed to create ScreenGui")
+        return
+    end
+    
+    local mainFrame = SkillTree.UI.Elements.CreateStyledFrame(SkillTree, screenGui)
+    mainFrame.Visible = false
+    
+    local header = UIHandler.CreateHeader(SkillTree, mainFrame)
+    
+    local leftPanel = SkillTree.UI.Elements.CreateLeftPanel(SkillTree, mainFrame)
+    local pluginsList = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, leftPanel)
+    UIHandler.UpdatePluginsList(SkillTree, pluginsList)
+    
+    local contentArea = SkillTree.UI.Elements.CreateContentArea(SkillTree, mainFrame)
+    local contentFrame = SkillTree.UI.Elements.CreateScrollingFrame(SkillTree, contentArea)
+    
+    SkillTree.GlobalData.MainFrame = mainFrame
+    SkillTree.GlobalData.PluginsList = pluginsList
+    SkillTree.GlobalData.ContentFrame = contentFrame
+    
+    print("UIHandler.CreateMainMenu: Main menu created successfully")
+end
+
+function UIHandler.CreateHeader(SkillTree, parent)
+    local header = SkillTree.UI.Elements.CreateFrame(SkillTree, parent, UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "HeaderHeight")), UDim2.new(0, 0, 0, 0))
+    header.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
+    
+    local titleLabel = SkillTree.UI.Elements.CreateTitleLabel(SkillTree, header, "SkillTree", UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 1, 0), UDim2.new(0, 0, 0, 0))
+    titleLabel.Position = UDim2.new(0.5, -titleLabel.TextBounds.X/2, 0, 0)
+    
+    local separator = Instance.new("Frame")
+    separator.Parent = header
+    separator.Size = UDim2.new(1, 0, 0, SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
+    separator.Position = UDim2.new(0, 0, 1, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
+    separator.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
+    separator.BorderSizePixel = 0
+    
+    return header
+end 
+
+function UIHandler.UpdatePluginsList(SkillTree, pluginsList)
+    for _, v in pairs(pluginsList:GetChildren()) do
+        if v:IsA("GuiObject") then
+            v:Destroy()
+        end
+    end
+    
+    local pluginCount = 0
+    local buttonHeight = 30 + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2
+    for name, module in pairs(SkillTree.Modules) do
+        if module.IsPlugin then
+            local button = SkillTree.UI.Elements.CreateButton(SkillTree, pluginsList, name, function()
+                UIHandler.ShowPluginContent(SkillTree, name)
             end)
+            button.Position = UDim2.new(0, 0, 0, pluginCount * (buttonHeight + SkillTree.SharedConfig.GetConfig("UI", "SectionSpacing")))
+            pluginCount = pluginCount + 1
         end
-    end)
+    end
+    
+    pluginsList.CanvasSize = UDim2.new(0, 0, 0, pluginCount * (buttonHeight + SkillTree.SharedConfig.GetConfig("UI", "SectionSpacing")))
+end
 
-    frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
-            local delta = input.Position - mousePos
-            frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+function UIHandler.ShowPluginContent(SkillTree, pluginName)
+    local contentFrame = SkillTree.GlobalData.ContentFrame
+    for _, v in pairs(contentFrame:GetChildren()) do
+        if v:IsA("GuiObject") then
+            v:Destroy()
         end
-    end)
-
-    return frame
-end
-
-function UIElements.CreateButton(SkillTree, parent, text, onClick, size, position)
-    local button = Instance.new("TextButton")
-    button.Parent = parent
-    button.Size = size or UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30)
-    button.Position = position or UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0)
-    button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
-    button.BorderSizePixel = 0
-    button.AutoButtonColor = false
-    button.Text = text or ""
-    button.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
-    button.Font = SkillTree.SharedConfig.GetConfig("UI", "Font")
-    button.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize")
+    end
     
-    button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
-        button.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize") + 2
-    end)
-    button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Primary")
-        button.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize")
-    end)
-    
-    button.MouseButton1Click:Connect(onClick)
-    
-    local border = Instance.new("Frame")
-    border.Parent = button
-    border.Size = UDim2.new(1, SkillTree.SharedConfig.GetConfig("UI", "BorderSize") * 2, 1, SkillTree.SharedConfig.GetConfig("UI", "BorderSize") * 2)
-    border.Position = UDim2.new(0, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"), 0, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
-    border.BackgroundTransparency = 1
-    border.BorderSizePixel = SkillTree.SharedConfig.GetConfig("UI", "BorderSize")
-    border.BorderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Tertiary")
-    border.ZIndex = button.ZIndex - 1
-    
-    return button
+    local plugin = SkillTree.Modules[pluginName]
+    if plugin and plugin.GetContent then
+        local content = plugin.GetContent(SkillTree)
+        if content then
+            local itemHeight = 30 + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2
+            for i, item in ipairs(content) do
+                local yPosition = (i - 1) * (itemHeight + SkillTree.SharedConfig.GetConfig("UI", "SectionSpacing"))
+                
+                if type(item) == "userdata" and item.IsA then
+                    item.Parent = contentFrame
+                    item.Position = UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition)
+                    
+                    if item:IsA("TextButton") and item.Text == "Toggle Test" then
+                        UIHandler.UpdateToggleButton(SkillTree, item.Text, false)
+                    end
+                else
+                    local label = UIHandler.CreateWrappedTextLabel(SkillTree, contentFrame, tostring(item), UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30), UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, yPosition))
+                    itemHeight = label.TextBounds.Y + SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2
+                    label.Size = UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, itemHeight)
+                end
+            end
+            
+            contentFrame.CanvasSize = UDim2.new(0, 0, 0, #content * (itemHeight + SkillTree.SharedConfig.GetConfig("UI", "SectionSpacing")))
+        else
+            SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", nil, UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0))
+        end
+    else
+        SkillTree.UI.Elements.CreateTextLabel(SkillTree, contentFrame, "No content available for this plugin.", nil, UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0))
+    end
 end
 
-function UIElements.CreateTextBox(SkillTree, parent, placeholderText, size, position)
-    local textBox = Instance.new("TextBox")
-    textBox.Parent = parent
-    textBox.Size = size or UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30)
-    textBox.Position = position or UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, 0)
-    textBox.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
-    textBox.BorderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Secondary")
-    textBox.BorderSizePixel = SkillTree.SharedConfig.GetConfig("UI", "BorderSize")
-    textBox.PlaceholderText = placeholderText or ""
-    textBox.PlaceholderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
-    textBox.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
-    textBox.Font = SkillTree.SharedConfig.GetConfig("UI", "Font")
-    textBox.TextSize = SkillTree.SharedConfig.GetConfig("UI", "FontSize")
-    return textBox
+function UIHandler.UpdateToggleButton(SkillTree, buttonText, state)
+    local contentFrame = SkillTree.GlobalData.ContentFrame
+    for _, child in ipairs(contentFrame:GetChildren()) do
+        if child:IsA("TextButton") and child.Text == buttonText then
+            child.TextColor3 = state and SkillTree.SharedConfig.GetConfig("UI", "TrueColor") or SkillTree.SharedConfig.GetConfig("UI", "FalseColor")
+        end
+    end
 end
 
-function UIElements.CreateScrollingFrame(SkillTree, parent, size, position)
-    local scrollingFrame = Instance.new("ScrollingFrame")
-    scrollingFrame.Parent = parent
-    scrollingFrame.Size = size or UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2)
-    scrollingFrame.Position = position or UDim2.new(0, SkillTree.SharedConfig.GetConfig("UI", "Padding"), 0, SkillTree.SharedConfig.GetConfig("UI", "Padding"))
-    scrollingFrame.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "Background")
-    scrollingFrame.BorderSizePixel = 0
-    scrollingFrame.ScrollBarThickness = SkillTree.SharedConfig.GetConfig("UI", "ScrollBarThickness")
-    scrollingFrame.ScrollBarImageColor3 = SkillTree.SharedConfig.GetConfig("UI", "Tertiary")
-    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    return scrollingFrame
-end
-
-function UIElements.CreateLeftPanel(SkillTree, parent)
-    local leftPanel = UIElements.CreateFrame(SkillTree, parent, UDim2.new(SkillTree.SharedConfig.GetConfig("UI", "LeftPanelWidth"), 0, 1, 0), UDim2.new(0, 0, 0, 0))
-    leftPanel.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "LeftPanelColor")
-    return leftPanel
-end
-
-function UIElements.CreateContentArea(SkillTree, parent)
-    local contentArea = UIElements.CreateFrame(SkillTree, parent, UDim2.new(SkillTree.SharedConfig.GetConfig("UI", "ContentAreaWidth"), 0, 1, 0), UDim2.new(SkillTree.SharedConfig.GetConfig("UI", "LeftPanelWidth"), 0, 0, 0))
-    contentArea.BackgroundColor3 = SkillTree.SharedConfig.GetConfig("UI", "ContentColor")
-    return contentArea
-end
-
-function UIElements.CreateStyledFrame(SkillTree, parent, size, position)
-    local frame = UIElements.CreateDraggableFrame(SkillTree, parent, size or SkillTree.SharedConfig.GetConfig("UI", "Size"), position or SkillTree.SharedConfig.GetConfig("UI", "Position"))
-    
-    local border = Instance.new("Frame")
-    border.Parent = frame
-    border.Size = UDim2.new(1, SkillTree.SharedConfig.GetConfig("UI", "BorderSize") * 2, 1, SkillTree.SharedConfig.GetConfig("UI", "BorderSize") * 2)
-    border.Position = UDim2.new(0, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"), 0, -SkillTree.SharedConfig.GetConfig("UI", "BorderSize"))
-    border.BackgroundTransparency = 1
-    border.BorderSizePixel = SkillTree.SharedConfig.GetConfig("UI", "BorderSize")
-    border.BorderColor3 = SkillTree.SharedConfig.GetConfig("UI", "Tertiary")
-    
-    return frame
-end
-
-function UIElements.CreateTitleLabel(SkillTree, parent, text, size, position)
-    local label = Instance.new("TextLabel")
-    label.Parent = parent
-    label.Size = size or UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 1, 0)
-    label.Position = position or UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text or ""
-    label.TextColor3 = SkillTree.SharedConfig.GetConfig("UI", "Text")
-    label.Font = SkillTree.SharedConfig.GetConfig("UI", "Font")
-    label.TextSize = SkillTree.SharedConfig.GetConfig("UI", "TitleFontSize")
-    label.TextWrapped = true
-    label.TextXAlignment = Enum.TextXAlignment.Center
-    label.TextYAlignment = Enum.TextYAlignment.Center
-    return label
-end
-
-function UIElements.CreateTextLabel(SkillTree, parent, text, size, position)
+function UIHandler.CreateWrappedTextLabel(SkillTree, parent, text, size, position)
     local label = Instance.new("TextLabel")
     label.Parent = parent
     label.Size = size or UDim2.new(1, -SkillTree.SharedConfig.GetConfig("UI", "Padding") * 2, 0, 30)
@@ -174,4 +184,4 @@ function UIElements.CreateTextLabel(SkillTree, parent, text, size, position)
     return label
 end
 
-return UIElements
+return UIHandler
