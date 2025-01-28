@@ -15,34 +15,52 @@ function UIHandler.ToggleMenu(SkillTree)
 end
 
 function UIHandler.Init(SkillTree)
+    print("UIHandler.Init: Starting initialization")
+    if not SkillTree.UIElements then
+        print("UIHandler.Init: UIElements not found")
+        return
+    end
+    
     SkillTree.UI = {Elements = SkillTree.UIElements}
+    
+    if not SkillTree.SharedConfig then
+        print("UIHandler.Init: SharedConfig not found")
+        return
+    end
     
     while not SkillTree.SharedConfig or not SkillTree.SharedConfig.GetConfig("UI", "Primary") do
         wait(0.1)
     end
     
-    print("UIHandler.Init: SkillTree.UI.Elements:", SkillTree.UI.Elements)
+    print("UIHandler.Init: Creating main menu")
+    local success, errorMsg = pcall(function()
+        UIHandler.CreateMainMenu(SkillTree)
+    end)
     
-    if not SkillTree.UI.Elements then
-        error("UIElements not loaded")
+    if not success then
+        print("UIHandler.Init: Failed to create main menu. Error: " .. tostring(errorMsg))
         return
     end
     
-    UIHandler.CreateMainMenu(SkillTree)
-    
+    print("UIHandler.Init: Setting up toggle functionality")
     game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
         if not gameProcessed and input.KeyCode == Enum.KeyCode.RightControl then
             UIHandler.ToggleMenu(SkillTree)
         end
     end)
+    
+    print("UIHandler.Init: Initialization completed successfully")
 end
-
 
 function UIHandler.OnStart(SkillTree) end
 
 function UIHandler.CreateMainMenu(SkillTree)
+    print("UIHandler.CreateMainMenu: Starting to create main menu")
     local screenGui = SkillTree.UI.Elements.CreateScreenGui(SkillTree)
-    if not screenGui then return end
+    if not screenGui then
+        print("UIHandler.CreateMainMenu: Failed to create ScreenGui")
+        return
+    end
     
     local mainFrame = SkillTree.UI.Elements.CreateStyledFrame(SkillTree, screenGui)
     mainFrame.Visible = false
@@ -59,6 +77,8 @@ function UIHandler.CreateMainMenu(SkillTree)
     SkillTree.GlobalData.MainFrame = mainFrame
     SkillTree.GlobalData.PluginsList = pluginsList
     SkillTree.GlobalData.ContentFrame = contentFrame
+    
+    print("UIHandler.CreateMainMenu: Main menu created successfully")
 end
 
 function UIHandler.CreateHeader(SkillTree, parent)
