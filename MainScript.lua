@@ -5,7 +5,7 @@ print("SkillTree Incoming..")
 _G.SkillTree = {Modules = {}, GlobalData = {}}
 
 -- Load ModuleLoader
-local ModuleLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/LxckStxp/SkillTree/refs/heads/main/ModuleLoader.lua"))()
+local ModuleLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/LxckStxp/SkillTree/main/ModuleLoader.lua"))()
 
 -- Use ModuleLoader to load itself into SkillTree
 ModuleLoader.LoadModule("ModuleLoader", "https://raw.githubusercontent.com/LcxkStxp/SkillTree/main/ModuleLoader.lua", _G.SkillTree)
